@@ -188,7 +188,25 @@ export default function trustKit(opts) {
             // Juste avant le premier <h1> ; si ce <h1> est dans un îlot React (<astro-island>),
             // avant l'îlot : React compare son rendu au HTML servi, on n'y insère jamais rien.
             const h1 = html.search(/<h1[\s>]/);
-            if (h1 >= 0) {
+            // La date ne prend plus une ligne a elle seule (RECETTE §10.3, 2026-10-14) : elle
+            // va a droite sur la ligne fine du fil d'Ariane. Une page peut lui reserver sa
+            // place (`<span data-crumb-aside></span>`) ; sinon, si un <nav> de fil d'Ariane
+            // precede directement le <h1>, la date le rejoint sur sa ligne.
+            const slot = '<span data-crumb-aside></span>';
+            const aside = top.replace('style="margin:0 0 0.5rem;', 'style="margin:0 0 0 auto;');
+            const navEnd = h1 >= 0 ? html.lastIndexOf('</nav>', h1) : -1;
+            const navStart = navEnd >= 0 ? html.lastIndexOf('<nav', navEnd) : -1;
+            const between = navEnd >= 0 ? html.slice(navEnd + 6, h1).replace(/<!--[\s\S]*?-->/g, '').trim() : 'x';
+            if (html.includes(slot)) {
+              html = html.replace(slot, aside);
+            } else if (h1 >= 0 && between === '' && navStart > html.indexOf('</header>')) {
+              const navOpen = html.slice(navStart, html.indexOf('>', navStart) + 1);
+              const mb = (navOpen.match(/\bmb-\d+\b/) || [''])[0];
+              html = html.slice(0, navStart)
+                + `<div class="${mb}" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:1.5rem">`
+                + navOpen.replace(/\s*\bmb-\d+\b/, '') + html.slice(navStart + navOpen.length, navEnd + 6)
+                + aside + '</div>' + html.slice(navEnd + 6);
+            } else if (h1 >= 0) {
               let at = h1;
               const open = html.lastIndexOf('<astro-island', h1);
               if (open >= 0 && html.lastIndexOf('</astro-island>', h1) < open) at = open;
