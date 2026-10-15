@@ -1,5 +1,5 @@
 
-export const CONTACT_EMAIL = 'contacto@ordenadoliquido.pt';
+export const CONTACT_EMAIL = 'contacto@ordenadoliquido.com';
 
 /*
  * Identite legale de l'editeur (RECETTE-SITE.md, controle check-legal).

@@ -1,4 +1,4 @@
-# ordenadoliquido.pt
+# ordenadoliquido.com
 
 ## About
 Portuguese salary calculator (Calculadora de Salário Líquido) for 2026.

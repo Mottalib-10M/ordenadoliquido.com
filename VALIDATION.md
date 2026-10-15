@@ -1,4 +1,4 @@
-# VALIDATION, ordenadoliquido.pt
+# VALIDATION, ordenadoliquido.com
 
 ## Metodologia
 
