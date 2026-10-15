@@ -6,7 +6,7 @@
  * leur en-tête et leur pied : le plus sûr est d'intervenir sur le HTML construit, une fois,
  * au lieu de retoucher des centaines de pages. Après le build, pour chaque page indexable :
  *
- *   - en haut, juste avant le <h1> (il en prend l'alignement) : « Mis à jour le AAAA-MM-JJ »
+ *   - en haut, juste avant le <h1>, sur une page de lecture seulement (Article) : « Mis à jour le 7 octobre 2026 »
  *   - en bas, dans le dernier <footer>, avec la classe du conteneur du pied (même alignement) :
  *     disclaimer, date, liens méthode et auteur (rel="author")
  *   - dans <head> : Organization (founder = Person complet, foundingDate,
@@ -161,6 +161,15 @@ export default function trustKit(opts) {
             const path = f.split('/dist')[1]?.replace(/index\.html$/, '') || '/';
             const { t, lang, about, method } = localeOf(path);
             const dateTexte = dateLisible(date, lang);
+            // Date en haut seulement sur une page de lecture (Article déclaré) ; sur un
+            // simulateur ou un accueil, elle reste en bas (RECETTE §8.4, 2026-10-15).
+            // Un guide déclaré Article mais qui s'ouvre sur un simulateur (moins de 250 mots entre le
+            // titre et le premier champ) se traite comme un simulateur : pas de date au-dessus.
+            const apresH1 = html.slice(Math.max(html.indexOf('</h1>'), 0));
+            const champ = apresH1.search(/<input\b(?![^>]*type="(?:hidden|search|checkbox|radio|submit|button)")[^>]*>|<select\b|<button\b[^>]*\baria-pressed=|role="slider"/i);
+            const meneParSimu = html.includes('</h1>') && champ >= 0
+              && apresH1.slice(0, champ).replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length < 250;
+            const lecture = /"@type"\s*:\s*"(?:Article|BlogPosting|NewsArticle)"/.test(html) && !meneParSimu;
             const top = `<p data-trust-kit class="trust-top" style="margin:0 0 0.5rem;font-size:0.8125rem;opacity:0.8">`
               + `${t.updated} <time datetime="${date}">${dateTexte}</time></p>`;
             // Largeur du pied de page : on ne recopie la classe d'un div du pied que si
@@ -197,7 +206,9 @@ export default function trustKit(opts) {
             const navEnd = h1 >= 0 ? html.lastIndexOf('</nav>', h1) : -1;
             const navStart = navEnd >= 0 ? html.lastIndexOf('<nav', navEnd) : -1;
             const between = navEnd >= 0 ? html.slice(navEnd + 6, h1).replace(/<!--[\s\S]*?-->/g, '').trim() : 'x';
-            if (html.includes(slot)) {
+            if (!lecture) {
+              html = html.replace(slot, ''); // pas de date en haut : elle est en bas de page
+            } else if (html.includes(slot)) {
               html = html.replace(slot, aside);
             } else if (h1 >= 0 && between === '' && navStart > html.indexOf('</header>')) {
               const navOpen = html.slice(navStart, html.indexOf('>', navStart) + 1);
