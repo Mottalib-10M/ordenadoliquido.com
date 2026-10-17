@@ -1,11 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { CONTACT_EMAIL, LEGAL } from "../../data/site-config";
+import { CONTACT_EMAIL, GA4_ID, LEGAL } from "../../data/site-config";
 ---
 
 <Layout
   title="Política de Privacidade e Tratamento de Dados Pessoais"
-  description="O salário bruto, o estado civil e os dependentes que introduz ficam no seu navegador. Sem cookies, sem dados pessoais guardados; só a estabilidade é medida."
+  description="O salário bruto, o estado civil e os dependentes que introduz ficam no seu navegador. Audiência medida com Google Analytics (cookies 13 meses no máximo), sem publicidade."
   canonical="/privacidade/"
 >
   <section class="pt-6 pb-12 md:pb-16">
@@ -19,8 +19,8 @@ import { CONTACT_EMAIL, LEGAL } from "../../data/site-config";
         <p>
           O ordenadoliquido.com é publicado pela {LEGAL.entityName}. Esta política explica, à luz do Regulamento
           Geral sobre a Proteção de Dados (RGPD, Regulamento (UE) 2016/679) e da Lei n.º 58/2019, o que acontece
-          às informações da sua visita. A resposta curta: o site não instala cookies e o editor não guarda
-          nenhum dado pessoal sobre si.
+          às informações da sua visita. A resposta curta: o que introduz fica no seu navegador; as visitas são
+          contadas com o Google Analytics, que instala dois cookies; o site não tem publicidade.
         </p>
 
         <h2>O que introduz nos simuladores</h2>
@@ -32,12 +32,24 @@ import { CONTACT_EMAIL, LEGAL } from "../../data/site-config";
           nada é guardado no dispositivo: ao fechar o separador, os valores desaparecem.
         </p>
 
-        <h2>Cookies</h2>
+        <h2>Cookies e medição de audiência</h2>
         <p>
-          Nem o site, nem os simuladores, nem a ferramenta de estabilidade descrita abaixo instalam cookies, e
-          nada é escrito no armazenamento local ou de sessão do navegador. É por isso que não aparece nenhum
-          banner: não há nada para aceitar ou recusar. O site não tem publicidade nem rastreadores publicitários.
+          O site usa o <strong>Google Analytics 4</strong> para contar as visitas e perceber que páginas são úteis:
+          páginas vistas, página de origem, duração da visita, tipo de dispositivo e de navegador, país e cidade
+          aproximados. Para isso, o Google Analytics instala dois cookies no seu dispositivo: <code>_ga</code>, que
+          distingue os visitantes com um identificador aleatório, e <code>_ga_{GA4_ID.replace('G-', '')}</code>, que
+          guarda o estado da visita. A sua duração está limitada a 13 meses no máximo (390 dias) e não é prolongada
+          a cada visita; a predefinição da Google é de 2 anos. Os simuladores e a ferramenta Clarity descrita abaixo
+          não instalam cookies.
         </p>
+        <ul>
+          <li><strong>Endereço IP</strong>: o Google Analytics 4 não o regista nem o guarda; usa-o apenas no momento da recolha para deduzir o país e a cidade aproximados. O endereço da página enviado não leva parâmetros.</li>
+          <li><strong>Sem publicidade</strong>: o armazenamento publicitário, os dados de utilizador para anúncios, a personalização de anúncios e os sinais Google estão desativados, e os dados não são partilhados com nenhum anunciante.</li>
+          <li><strong>Fornecedor</strong>: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irlanda, na qualidade de subcontratante (artigo 28.º do RGPD). Os dados podem ser transferidos para a Google LLC, nos Estados Unidos, ao abrigo do EU–U.S. Data Privacy Framework e das cláusulas contratuais-tipo da Comissão Europeia.</li>
+          <li><strong>Conservação na Google</strong>: 14 meses para os dados ao nível da visita e do identificador, depois apagados; ficam apenas totais anónimos.</li>
+          <li><strong>Fundamento</strong>: o interesse legítimo do editor em medir a utilização do site (artigo 6.º, n.º 1, alínea f), do RGPD).</li>
+          <li><strong>Oposição</strong>: bloqueie ou apague os cookies nas definições do navegador, ou instale o <a href="https://tools.google.com/dlpage/gaoptout" rel="nofollow noopener" target="_blank">extra de desativação do Google Analytics</a>. O site funciona da mesma forma.</li>
+        </ul>
 
         <h2>Medição anónima da estabilidade</h2>
         <p>
@@ -71,9 +83,9 @@ import { CONTACT_EMAIL, LEGAL } from "../../data/site-config";
 
         <h2>Os seus direitos</h2>
         <p>
-          O RGPD dá-lhe direito de acesso, retificação, apagamento, limitação e oposição. Como o editor não guarda
-          dados sobre si, na prática estes direitos dizem respeito às mensagens que lhe tenha enviado; quanto à
-          medição de estabilidade, pode exercê-los também junto da Microsoft. Pode apresentar reclamação à
+          O RGPD dá-lhe direito de acesso, retificação, apagamento, limitação e oposição. O editor não guarda
+          dados sobre si além das mensagens que lhe tenha enviado; quanto à medição de audiência, pode exercê-los
+          também junto da Google e, quanto à medição de estabilidade, junto da Microsoft. Pode apresentar reclamação à
           {LEGAL.supervisoryAuthority} (<a href={LEGAL.supervisoryAuthorityUrl} rel="nofollow noopener" target="_blank">cnpd.pt</a>).
         </p>
 
@@ -84,7 +96,7 @@ import { CONTACT_EMAIL, LEGAL } from "../../data/site-config";
         </p>
 
         <p class="text-sm text-neutral-500 mt-8">
-          &Uacute;ltima atualiza&ccedil;&atilde;o: 6 de outubro de 2026
+          &Uacute;ltima atualiza&ccedil;&atilde;o: 17 de outubro de 2026
         </p>
       </div>
     </div>
