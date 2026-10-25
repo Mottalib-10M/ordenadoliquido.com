@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ordenadoliquido.com/sitemap-index.xml
+
+Disallow: /*?*
