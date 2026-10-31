@@ -55,6 +55,13 @@ export const DEDUCAO_ESPECIFICA = Math.round(8.54 * IAS_2026 * 100) / 100;
 /** Dedução das despesas gerais familiares, por sujeito passivo (limite) */
 export const DEDUCAO_FAMILIAR_POR_PESSOA = 250;
 
+/**
+ * Dedução de rendas de habitação permanente (CIRS art. 78.º-E, n.º 1, al. a) : 15 % das rendas,
+ * limite para os rendimentos de 2026 = 900 € (Decreto-Lei n.º 97/2026, art. 15.º, n.º 1 ; 1 000 € a
+ * partir de 2027). Fonte : Portal das Finanças, CIRS art. 78.º-E, lido em 2026-10-31.
+ */
+export const DEDUCAO_RENDAS_2026 = 900;
+
 /** Dedução por dependente */
 export const DEDUCAO_POR_DEPENDENTE = 600;
 
@@ -127,6 +134,22 @@ export const TABELA_RETENCAO_III: LinhaRetencao[] = [
 export const PARCELA_DEPENDENTE: Record<EstadoCivil, number> = { casado2titulares: 21.43, solteiro: 34.29, casado1titular: 42.86 };
 
 /**
+ * Ajustamento excecional de novembro de 2026 (Despacho n.º 12523-A/2026, de 14 de outubro, n.os 1 a 7) :
+ * rendimentos pagos entre 1 e 30 de novembro de 2026 (continente) retêm apenas 50 % do valor das tabelas
+ * do Despacho n.º 233-A/2026, salvo se a remuneração mensal exceder o limite superior do penúltimo escalão
+ * (retenção inalterada). Aplica-se também ao subsídio de Natal pago em novembro (n.º 5).
+ * A partir de 1 de dezembro de 2026 voltam as tabelas sem ajustamento (n.º 7).
+ * Fonte : Portal das Finanças, despacho-12523-a-2026.pdf, lido em 2026-10-31.
+ */
+export const AJUSTE_NOVEMBRO_2026 = {
+  inicio: "2026-11-01",
+  fim: "2026-11-30",
+  fator: 0.5,
+  /** Limite superior do penúltimo escalão de cada tabela. */
+  limitePenultimo: { solteiro: 20_221, casado2titulares: 20_221, casado1titular: 20_265 } as Record<EstadoCivil, number>,
+};
+
+/**
  * Retenção mensal em euros : R × taxa marginal máxima − parcela a abater − parcela por dependente × n.º de dependentes.
  * Com três ou mais dependentes, a taxa marginal máxima baixa um ponto percentual. Nunca inferior a zero.
  */
@@ -138,7 +161,9 @@ export function retencaoMensal(salarioBrutoMensal: number, estadoCivil: EstadoCi
   const taxa = n >= 3 ? linha.taxa - 0.01 : linha.taxa;
   const parcela = typeof linha.parcela === "number" ? linha.parcela : linha.taxa * linha.parcela.fator * (linha.parcela.ref - R);
   const valor = R * taxa - parcela - PARCELA_DEPENDENTE[estadoCivil] * n;
-  return Math.max(0, Math.floor(valor * 100) / 100);
+  // Le Despacho n.º 233-A/2026 (n.º 3) donne la formule sans règle de troncature : arrondi au cêntimo
+  // le plus proche (1 000 € : 35,99875 → 36,00 €, et non 35,99 €).
+  return Math.max(0, Math.round(valor * 100) / 100);
 }
 
 /**

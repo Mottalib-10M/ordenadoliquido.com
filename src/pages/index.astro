@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import SalaryCalculator from "../components/SalaryCalculator";
 import FontesOficiais from '../components/FontesOficiais.astro';
 import ExemploDetalhado from '../components/ExemploDetalhado.astro';
-import { ESCALOES_IRS_2026 as ESC, DEDUCAO_ESPECIFICA, DEDUCAO_POR_DEPENDENTE, SALARIO_MINIMO_2026 as SMN, TSU_TRABALHADOR, IRS_JOVEM_LIMITE } from '../lib/baremes-2026';
+import { ESCALOES_IRS_2026 as ESC, DEDUCAO_ESPECIFICA, DEDUCAO_POR_DEPENDENTE, SALARIO_MINIMO_2026 as SMN, TSU_TRABALHADOR, IRS_JOVEM_LIMITE, DEDUCAO_RENDAS_2026 } from '../lib/baremes-2026';
 import { calculateSalary } from '../lib/engine';
 const n = (x: number, d = 0) => new Intl.NumberFormat('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
 const pct = (x: number) => new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 }).format(x * 100) + '%';
@@ -145,7 +145,7 @@ const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', depe
           <strong>Despesas de educa&ccedil;&atilde;o e forma&ccedil;&atilde;o</strong>: 30% das despesas de educa&ccedil;&atilde;o, at&eacute; 800&euro;.
         </li>
         <li>
-          <strong>Encargos com im&oacute;veis</strong>: rendas at&eacute; 502&euro; ou juros de empr&eacute;stimo &agrave; habita&ccedil;&atilde;o at&eacute; 296&euro;.
+          <strong>Encargos com im&oacute;veis</strong>: 15% das rendas at&eacute; {n(DEDUCAO_RENDAS_2026)}&euro; (rendimentos de 2026) ou juros de empr&eacute;stimo &agrave; habita&ccedil;&atilde;o at&eacute; 296&euro;.
         </li>
       </ul>
 
@@ -160,7 +160,7 @@ const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', depe
       </p>
 
       <p>
-        Para beneficiar do IRS Jovem, o trabalhador deve ter completado um n&iacute;vel de qualifica&ccedil;&atilde;o igual ou superior ao n&iacute;vel 4 do Quadro Nacional de Qualifica&ccedil;&otilde;es (ensino secund&aacute;rio ou equivalente). A isen&ccedil;&atilde;o &eacute; aplic&aacute;vel tanto a trabalhadores por conta de outrem como a trabalhadores independentes.
+        Desde 2025 n&atilde;o &eacute; exigido nenhum n&iacute;vel de escolaridade: a antiga condi&ccedil;&atilde;o de qualifica&ccedil;&atilde;o (n&iacute;vel 4 do Quadro Nacional de Qualifica&ccedil;&otilde;es) foi revogada pela Lei do Or&ccedil;amento do Estado para 2025 (Lei n.&ordm; 45-A/2024, art. 12.&ordm;-B do C&oacute;digo do IRS). Basta ter at&eacute; 35 anos e n&atilde;o ser considerado dependente. A isen&ccedil;&atilde;o &eacute; aplic&aacute;vel tanto a trabalhadores por conta de outrem como a trabalhadores independentes.
       </p>
 
       <h3 class="text-xl font-bold text-neutral-900 mt-10 mb-4">Sal&aacute;rio M&iacute;nimo Nacional em 2026</h3>

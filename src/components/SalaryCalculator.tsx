@@ -1,13 +1,22 @@
-import { useState, useCallback, useMemo } from "react";
-import { calculateSalary, type SalaryInput, type SalaryResult } from "../lib/engine";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { calculateSalary, retencaoNovembro2026, type SalaryInput, type SalaryResult } from "../lib/engine";
 import { SALARIO_MINIMO_2026 } from "../lib/baremes-2026";
 
+// Ao cêntimo : deux décimales toujours (« 818,80 € » et non « 818,8 € »), et jamais
+// « -0 » (un montant arrondi à zéro reste zéro, sans signe).
 function formatCurrency(value: number): string {
+  const v = Math.abs(value) < 0.005 ? 0 : value;
   return new Intl.NumberFormat("pt-PT", {
     style: "currency",
     currency: "EUR",
-    minimumFractionDigits: 0,
-  }).format(value);
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(v);
+}
+
+// Montant retiré : signe moins seulement s'il y a quelque chose à retirer.
+function formatDesconto(value: number): string {
+  return Math.abs(value) < 0.005 ? formatCurrency(0) : `-${formatCurrency(value)}`;
 }
 
 function formatPercent(value: number): string {
@@ -43,6 +52,12 @@ export default function SalaryCalculator() {
   );
 
   const result: SalaryResult = useMemo(() => calculateSalary(input), [input]);
+
+  // Novembre 2026 : retenue réduite de moitié (Despacho n.º 12523-A/2026). La date se lit dans le
+  // navigateur, après hydratation, pour que la page statique ne fige pas l'encadré.
+  const [hoje, setHoje] = useState<string | null>(null);
+  useEffect(() => setHoje(new Date().toISOString().slice(0, 10)), []);
+  const retNovembro = hoje ? retencaoNovembro2026(result.grossMonthly, maritalStatus, result.retencaoMensal, hoje) : null;
 
   const handleGrossChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     // On accepte les chiffres, la virgule, le point et l'espace ; le reste est
@@ -225,8 +240,8 @@ export default function SalaryCalculator() {
 
           {/* Segurança Social */}
           <Section title="Seguran&ccedil;a Social (TSU)">
-            <Row label="TSU Trabalhador (11%)" value={`-${formatCurrency(result.tsuEmployee)}`} negative />
-            <Row label="TSU Trabalhador Anual" value={`-${formatCurrency(result.tsuEmployeeAnnual)}`} negative />
+            <Row label="TSU Trabalhador (11%)" value={formatDesconto(result.tsuEmployee)} negative />
+            <Row label="TSU Trabalhador Anual" value={formatDesconto(result.tsuEmployeeAnnual)} negative />
             <Row label="TSU Empregador (23,75%)" value={formatCurrency(result.tsuEmployer)} info />
             <Row label="TSU Empregador Anual" value={formatCurrency(result.tsuEmployerAnnual)} info />
           </Section>
@@ -235,11 +250,11 @@ export default function SalaryCalculator() {
           <Section title="IRS, Imposto sobre o Rendimento">
             <Row label="Dedu&ccedil;&atilde;o Espec&iacute;fica" value={formatCurrency(result.deducaoEspecifica)} info />
             <Row label="Rendimento Colet&aacute;vel" value={formatCurrency(result.taxableIncome)} />
-            <Row label="IRS Anual" value={`-${formatCurrency(result.irsAnnual)}`} negative />
+            <Row label="IRS Anual" value={formatDesconto(result.irsAnnual)} negative />
             {result.irsJovemDesconto > 0 && (
               <Row label="Desconto IRS Jovem" value={formatCurrency(result.irsJovemDesconto)} positive />
             )}
-            <Row label="Reten&ccedil;&atilde;o Mensal na Fonte" value={`-${formatCurrency(result.retencaoMensal)}`} negative />
+            <Row label="Reten&ccedil;&atilde;o Mensal na Fonte" value={formatDesconto(result.retencaoMensal)} negative />
             <Row label="Taxa de Reten&ccedil;&atilde;o" value={formatPercent(result.retencaoTaxa)} />
             <Row label="Taxa Efetiva IRS" value={formatPercent(result.taxRate)} />
           </Section>
@@ -258,6 +273,12 @@ export default function SalaryCalculator() {
               <span className="text-base font-bold text-primary-900">Sal&aacute;rio l&iacute;quido mensal</span>
               <span className="text-2xl font-extrabold text-primary-800 tabular-nums">{formatCurrency(result.netMonthly)}</span>
             </div>
+            {retNovembro !== null && retNovembro !== result.retencaoMensal && (
+              <p className="text-sm text-primary-900 mt-3" data-novembro-2026>
+                Pagamentos de novembro de 2026: a reten&ccedil;&atilde;o desce para {formatCurrency(retNovembro)} (50&nbsp;% do valor da tabela, Despacho n.&ordm;&nbsp;12523-A/2026), o que d&aacute; um l&iacute;quido de{" "}
+                <strong className="tabular-nums">{formatCurrency(result.grossMonthly - result.tsuEmployee - retNovembro)}</strong> nesse m&ecirc;s, tamb&eacute;m no subs&iacute;dio de Natal pago em novembro. A partir de 1 de dezembro volta a reten&ccedil;&atilde;o normal.
+              </p>
+            )}
             <div className="flex justify-between items-baseline gap-4 mt-2">
               <span className="text-sm font-semibold text-primary-800">L&iacute;quido anual</span>
               <span className="text-lg font-bold text-primary-700 tabular-nums">{formatCurrency(result.netAnnual)}</span>

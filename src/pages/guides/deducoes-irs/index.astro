@@ -1,6 +1,7 @@
 ---
 import { CITAVEIS } from '../../../data/blocos-citaveis';
 import Layout from "../../../layouts/Layout.astro";
+import { DEDUCAO_RENDAS_2026 } from '../../../lib/baremes-2026';
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -21,7 +22,7 @@ const faqSchema = {
       "name": "Quais são as principais deduções de IRS em 2026?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "As principais deduções de IRS em 2026 incluem: despesas gerais familiares (até 250€ por sujeito passivo), despesas de saúde (15% até 1.000€), educação (30% até 800€), habitação (15% de rendas até 502€ ou juros de empréstimo), e despesas em lares (25% até 403,75€). Existem ainda deduções por dependentes e a dedução pela exigência de fatura."
+        "text": "As principais deduções de IRS em 2026 incluem: despesas gerais familiares (até 250€ por sujeito passivo), despesas de saúde (15% até 1.000€), educação (30% até 800€), habitação (15% de rendas até " + DEDUCAO_RENDAS_2026 + "€ ou juros de empréstimo), e despesas em lares (25% até 403,75€). Existem ainda deduções por dependentes e a dedução pela exigência de fatura."
       }
     },
     {
@@ -121,7 +122,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
           As despesas de habitação dedutíveis abrangem duas situações principais: rendas de habitação própria permanente e juros de empréstimos à habitação (apenas contratos anteriores a 2012).
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          <strong>Rendas:</strong> A dedução é de 15% das rendas pagas, com um limite de 502 euros por agregado familiar. Para arrendatários com rendimento coletável na primeira faixa, o limite pode ser majorado. No caso de imóveis situados em territórios do interior, o limite sobe para 800 euros.
+          <strong>Rendas:</strong> A dedução é de 15% das rendas pagas, com um limite de {DEDUCAO_RENDAS_2026} euros por agregado familiar para os rendimentos de 2026 (Decreto-Lei n.º 97/2026; 1.000 euros a partir de 2027). Para contribuintes com rendimento coletável mais baixo, o limite é majorado (artigo 78.º-E, n.º 4, do Código do IRS).
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
           <strong>Juros de empréstimo:</strong> Para contratos celebrados até 31 de dezembro de 2011, a dedução é de 15% dos juros pagos, até um limite de 296 euros. Contratos posteriores a esta data não beneficiam desta dedução.
@@ -189,7 +190,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
           <div class="bg-white rounded-xl border border-neutral-200 p-6">
             <h3 class="text-lg font-bold text-neutral-900 mb-2">Quais são as principais deduções de IRS em 2026?</h3>
             <p class="text-neutral-600 leading-relaxed">
-              As principais incluem: despesas gerais familiares (até 250 € por sujeito passivo), saúde (15% até 1.000 €), educação (30% até 800 €), habitação (15% de rendas até 502 €), lares (25% até 403,75 €), deduções por dependentes e a dedução pela exigência de fatura.
+              As principais incluem: despesas gerais familiares (até 250 € por sujeito passivo), saúde (15% até 1.000 €), educação (30% até 800 €), habitação (15% de rendas até {DEDUCAO_RENDAS_2026} €), lares (25% até 403,75 €), deduções por dependentes e a dedução pela exigência de fatura.
             </p>
           </div>
           <div class="bg-white rounded-xl border border-neutral-200 p-6">

@@ -4,6 +4,7 @@
  */
 
 import type { Exemplo } from './exemplos';
+import { DEDUCAO_RENDAS_2026 } from './baremes-2026';
 
 export interface SituacaoEntry {
   slug: string;
@@ -44,7 +45,7 @@ export const SITUACOES: SituacaoEntry[] = [
 ],
     acertoAnual: "Sem cônjuge nem dependentes, a retenção mensal aproxima-se bastante do imposto devido: a tabela de não casado é construída para isso. O reembolso, quando existe, vem quase sempre das deduções à coleta, e não de um excesso de retenção. Registar as faturas com NIF ao longo do ano é, nesta situação, o único fator que o trabalhador controla verdadeiramente: saúde, educação, habitação e lares reduzem o imposto já calculado, não o rendimento. Quem tem um PPR acrescenta ainda uma dedução própria, dentro do limite legal por escalão etário.",
     calculo: {
-  "intro": "O cálculo faz-se sempre pela mesma ordem, e essa ordem não é indiferente: a Segurança Social desconta primeiro, e só o que sobra entra na base do IRS. Inverter os dois passos sobrestima o imposto, e é o erro mais comum de quem faz a conta à mão.",
+  "intro": "O cálculo faz-se sempre pela mesma ordem, e essa ordem não é indiferente: a Segurança Social e a retenção de IRS calculam-se ambas sobre o bruto ilíquido, e só na declaração anual as contribuições entram na dedução específica. Aplicar a tabela de retenção ao bruto já diminuído da Segurança Social subestima o imposto retido, e é o erro mais comum de quem faz a conta à mão.",
   "etapas": [
     {
       "titulo": "Contribuição para a Segurança Social (TSU)",
@@ -114,7 +115,7 @@ export const SITUACOES: SituacaoEntry[] = [
       },
       {
         pergunta: "Como posso reduzir o IRS sendo solteiro?",
-        resposta: "As principais estratégias são: pedir faturas com NIF para maximizar deduções no e-Fatura, investir num PPR (dedução até 400€), declarar despesas de saúde (15%, até 1.000€), educação (30%, até 800€) e rendas de habitação (até 502€). Se tem menos de 35 anos, verifique a elegibilidade para o IRS Jovem."
+        resposta: `As principais estratégias são: pedir faturas com NIF para maximizar deduções no e-Fatura, investir num PPR (dedução até 400€), declarar despesas de saúde (15%, até 1.000€), educação (30%, até 800€) e rendas de habitação (até ${DEDUCAO_RENDAS_2026}€ em 2026). Se tem menos de 35 anos, verifique a elegibilidade para o IRS Jovem.`
       }
     ,
       {

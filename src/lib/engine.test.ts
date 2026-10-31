@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateTSU, calculateIRS, calculateRetencao, calculateSalary } from "./engine";
+import { calculateTSU, calculateIRS, calculateRetencao, calculateSalary, retencaoNovembro2026 } from "./engine";
 import {
   TSU_TRABALHADOR,
   TSU_EMPREGADOR,
@@ -193,5 +193,28 @@ describe("calculateSalary", () => {
     expect(calculateRetencao(1432, "casado1titular", 0)).toBeCloseTo(83.51, 1);
     // Três dependentes : taxa marginal menos um ponto
     expect(calculateRetencao(3000, "casado2titulares", 3)).toBeCloseTo(3000 * 0.3736 - 487.66 - 3 * 21.43, 1);
+  });
+  // Arrondi au cêntimo le plus proche, sans troncature (audit du 2026-10-28) ; formule du
+  // Despacho n.º 233-A/2026, n.º 3 : R × taxa − parcela − parcela por dependente × n.
+  it("rounds the withholding to the nearest cent (Despacho n.º 233-A/2026, n.º 3)", () => {
+    // Tabela I, 1 000 € : 12,5 % × 1000 − 12,5 % × 2,6 × (1273,85 − 1000) = 35,99875 → 36,00
+    expect(calculateSalary({ grossMonthly: 1000, maritalStatus: "solteiro", dependents: 0, irsJovem: 0 }).retencaoMensal).toBe(36);
+    // Tabela I, 3 000 € : 3000 × 38,36 % − 487,66 = 663,14
+    expect(calculateSalary({ grossMonthly: 3000, maritalStatus: "solteiro", dependents: 0, irsJovem: 0 }).retencaoMensal).toBe(663.14);
+    // Tabela III, 2 500 €, 2 dependentes : 2500 × 22,77 % − 289,47 − 2 × 42,86 = 194,06
+    expect(calculateSalary({ grossMonthly: 2500, maritalStatus: "casado1titular", dependents: 2, irsJovem: 0 }).retencaoMensal).toBe(194.06);
+    // Tabela I (casado, dois titulares), 1 500 €, 2 dependentes : 1500 × 24,1 % − 193,33 − 2 × 21,43 = 125,31
+    expect(calculateSalary({ grossMonthly: 1500, maritalStatus: "casado2titulares", dependents: 2, irsJovem: 0 }).retencaoMensal).toBe(125.31);
+    // Cas de référence de l'audit : 1 500 €, solteiro → retenção 168,17, líquido 1 166,83
+    const r1500 = calculateSalary({ grossMonthly: 1500, maritalStatus: "solteiro", dependents: 0, irsJovem: 0 });
+    expect(r1500.retencaoMensal).toBe(168.17);
+    expect(r1500.netMonthly).toBe(1166.83);
+  });
+  // Despacho n.º 12523-A/2026, n.os 2, 3 e 7 : 50 % em novembro de 2026, salvo acima do penúltimo escalão.
+  it("halves the withholding for November 2026 payments (Despacho n.º 12523-A/2026)", () => {
+    expect(retencaoNovembro2026(1500, "solteiro", 168.17, "2026-11-15")).toBe(84.09);
+    expect(retencaoNovembro2026(25000, "solteiro", 10520.19, "2026-11-15")).toBe(10520.19);
+    expect(retencaoNovembro2026(1500, "solteiro", 168.17, "2026-12-01")).toBeNull();
+    expect(retencaoNovembro2026(1500, "solteiro", 168.17, "2026-09-30")).toBeNull();
   });
 });

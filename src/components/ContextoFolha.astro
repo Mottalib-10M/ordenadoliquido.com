@@ -37,6 +37,7 @@ const mais = calc(referencia + 100);
 const ficaDe100 = mais.netMonthly - base.netMonthly;
 const marginal = 100 - ficaDe100;
 const efetiva = referencia > 0 ? (1 - base.netMonthly / referencia) * 100 : 0;
+const efetivaIrs = referencia > 0 ? (base.retencaoMensal / referencia) * 100 : 0;
 const custoEmpresa = base.grossMonthly + base.tsuEmployer;
 const situacao = rotulo ?? 'esta situação';
 
@@ -49,15 +50,16 @@ const pc = (v: number) =>
 <section class="max-w-6xl mx-auto px-4 mt-12">
   <h2 class="text-2xl font-bold text-neutral-900">Por que ordem se descontam as parcelas</h2>
   <p class="mt-3 leading-relaxed text-neutral-700">
-    O recibo tem duas linhas obrigatórias e a ordem entre elas não é indiferente. A contribuição
-    para a Segurança Social incide sobre o bruto ilíquido, sem qualquer teto, e desconta primeiro.
-    Só depois se aplica a retenção de IRS, que parte do mesmo bruto mas segue uma tabela escolhida
-    pela situação familiar. Inverter os dois passos sobrestima o imposto, e é o erro mais comum de
-    quem refaz a conta à mão.
+    O recibo tem duas linhas obrigatórias, calculadas lado a lado sobre o mesmo bruto. A
+    contribuição para a Segurança Social incide sobre o bruto ilíquido, sem qualquer teto. A
+    retenção de IRS parte também do bruto, e não do que sobra depois da Segurança Social, mas segue
+    uma tabela escolhida pela situação familiar. Aplicar a tabela ao bruto já diminuído da
+    contribuição subestima a retenção, e é o erro mais comum de quem refaz a conta à mão.
   </p>
   <p class="mt-3 leading-relaxed text-neutral-700">
     Em {situacao}, com {eur(referencia)} brutos, o líquido fica em {eur(base.netMonthly)}, ou seja
-    uma taxa efetiva de {pc(efetiva)}. Os cem euros seguintes de bruto, porém, só acrescentam
+    descontos de {pc(efetiva)} do bruto, dos quais {pc(efetivaIrs)} de IRS e o resto de Segurança
+    Social. Os cem euros seguintes de bruto, porém, só acrescentam
     {eur(ficaDe100)} ao líquido: a taxa marginal nesse ponto é de {pc(marginal)}. A distância entre
     os dois números é o que mais se confunde, porque o primeiro descreve o salário inteiro e o
     segundo apenas o euro seguinte.

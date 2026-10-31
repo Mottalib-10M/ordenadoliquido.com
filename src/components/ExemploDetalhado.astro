@@ -32,6 +32,8 @@ const pc = (v: number) =>
   (v * 100).toLocaleString('pt-PT', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' %';
 
 const taxaEfetiva = bruto > 0 ? (bruto - r.netMonthly) / bruto : 0;
+// Taxa de IRS seule : la « taxa efetiva » totale additionne Segurança Social et IRS.
+const taxaIrs = bruto > 0 ? r.retencaoMensal / bruto : 0;
 const custoEmpresa = r.grossMonthly + r.tsuEmployer;
 
 const linhas = [
@@ -42,14 +44,16 @@ const linhas = [
 ];
 ---
 
-<section class="max-w-6xl mx-auto mt-12 border-t border-neutral-200 pt-8">
+<section class="max-w-6xl mx-auto px-4 mt-12 border-t border-neutral-200 pt-8">
   <h2 class="text-2xl font-bold text-neutral-900 mb-3">
     Um exemplo seguido até ao fim: {eur(bruto)} brutos
   </h2>
   <p class="text-neutral-700 leading-relaxed mb-5">
-    A ordem das operações não é indiferente. A Segurança Social desconta primeiro, sobre o
-    bruto ilíquido, e só depois se aplica a retenção de IRS. Inverter os dois passos
-    sobrestima o imposto, e é o erro mais frequente de quem refaz a conta à mão.
+    Os dois descontos calculam-se lado a lado, ambos sobre o bruto ilíquido: 11 % para a
+    Segurança Social e a retenção de IRS dada pela tabela, que parte da mesma remuneração
+    mensal e não do valor que sobra depois da Segurança Social. Retirar primeiro a
+    contribuição e aplicar a tabela ao resto subestima a retenção, e é o erro mais frequente
+    de quem refaz a conta à mão.
   </p>
 
   <div class="overflow-x-auto">
@@ -69,8 +73,10 @@ const linhas = [
   </div>
 
   <p class="text-neutral-700 leading-relaxed mt-5">
-    A taxa efetiva é de {pc(taxaEfetiva)}, bem abaixo da taxa marginal do escalão: esta
-    última aplica-se apenas à parcela de rendimento que o excede, e não a todo o salário.
+    Ao todo, os descontos levam {pc(taxaEfetiva)} do bruto: 11 % de Segurança Social e
+    {pc(taxaIrs)} de retenção de IRS. É esta última, a taxa efetiva de IRS, que fica bem
+    abaixo da taxa marginal do escalão: a taxa marginal aplica-se apenas à parcela de
+    rendimento que excede o limite anterior, e não a todo o salário.
     É por isso que subir de escalão nunca faz descer o líquido, ao contrário do que se
     receia com frequência.
   </p>

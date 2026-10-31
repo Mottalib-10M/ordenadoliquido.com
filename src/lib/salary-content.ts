@@ -8,7 +8,7 @@
  * selects different sentence structures per salary amount.
  */
 
-import { ESCALOES_IRS_2026, DEDUCAO_ESPECIFICA, IRS_JOVEM_ESCALOES, IAS_2026 } from "./baremes-2026";
+import { ESCALOES_IRS_2026, DEDUCAO_ESPECIFICA, IRS_JOVEM_ESCALOES, IAS_2026, DEDUCAO_RENDAS_2026 } from "./baremes-2026";
 import { SALARIOS, type SalarioEntry } from "./salarios-data";
 import { calculateSalary } from "./engine";
 
@@ -617,13 +617,13 @@ export function getTaxTips(s: SalarioEntry, d: DerivedNumbers): TaxTip[] {
   // Deducoes - salary-specific amounts
   const deducaoMaxSaude = Math.min(1000, s.irsAnual * 0.15);
   const deducaoMaxEduc = Math.min(800, s.irsAnual * 0.30);
-  const totalDeducoes = deducaoMaxSaude + deducaoMaxEduc + 502 + 250;
+  const totalDeducoes = deducaoMaxSaude + deducaoMaxEduc + DEDUCAO_RENDAS_2026 + 250;
   const pctIrsRecuperado = totalDeducoes / s.irsAnual;
 
   const deducoesVariations = [
-    `Para o seu rendimento de ${eur(d.brutoAnual)} anuais, pode deduzir: despesas de sa\u00fade (15%, at\u00e9 ${eur(deducaoMaxSaude)}), educa\u00e7\u00e3o (30%, at\u00e9 ${eur(deducaoMaxEduc)}), habita\u00e7\u00e3o (15% das rendas, at\u00e9 502\u00a0\u20ac) e despesas gerais familiares (35%, at\u00e9 250\u00a0\u20ac). O total m\u00e1ximo de dedu\u00e7\u00f5es pode atingir ${eur(totalDeducoes)}, reduzindo o IRS de ${eur(s.irsAnual)} em at\u00e9 ${pct(pctIrsRecuperado)}.`,
-    `Com IRS anual de ${eur(s.irsAnual)}, as dedu\u00e7\u00f5es podem recuperar at\u00e9 ${eur(totalDeducoes)} (${pct(pctIrsRecuperado)} do imposto): sa\u00fade ${eur(deducaoMaxSaude)}, educa\u00e7\u00e3o ${eur(deducaoMaxEduc)}, habita\u00e7\u00e3o 502\u00a0\u20ac, gerais 250\u00a0\u20ac. Por m\u00eas, equivale a recuperar ${eur(totalDeducoes / 12)} que de outra forma iriam para o Estado.`,
-    `Maximize as dedu\u00e7\u00f5es sobre o seu IRS de ${eur(s.irsAnual)}: exija fatura em despesas de sa\u00fade (recupera at\u00e9 ${eur(deducaoMaxSaude)}), educa\u00e7\u00e3o (at\u00e9 ${eur(deducaoMaxEduc)}), rendas (at\u00e9 502\u00a0\u20ac) e supermercado/combust\u00edvel (at\u00e9 250\u00a0\u20ac). Total potencial: ${eur(totalDeducoes)}, que reduz a taxa efetiva de ${pct(d.taxaEfetiva)} para ${pct(d.taxaEfetiva - (totalDeducoes / d.brutoAnual))}.`,
+    `Para o seu rendimento de ${eur(d.brutoAnual)} anuais, pode deduzir: despesas de sa\u00fade (15%, at\u00e9 ${eur(deducaoMaxSaude)}), educa\u00e7\u00e3o (30%, at\u00e9 ${eur(deducaoMaxEduc)}), habita\u00e7\u00e3o (15% das rendas, at\u00e9 ${eur(DEDUCAO_RENDAS_2026)}) e despesas gerais familiares (35%, at\u00e9 250\u00a0\u20ac). O total m\u00e1ximo de dedu\u00e7\u00f5es pode atingir ${eur(totalDeducoes)}, reduzindo o IRS de ${eur(s.irsAnual)} em at\u00e9 ${pct(pctIrsRecuperado)}.`,
+    `Com IRS anual de ${eur(s.irsAnual)}, as dedu\u00e7\u00f5es podem recuperar at\u00e9 ${eur(totalDeducoes)} (${pct(pctIrsRecuperado)} do imposto): sa\u00fade ${eur(deducaoMaxSaude)}, educa\u00e7\u00e3o ${eur(deducaoMaxEduc)}, habita\u00e7\u00e3o ${eur(DEDUCAO_RENDAS_2026)}, gerais 250\u00a0\u20ac. Por m\u00eas, equivale a recuperar ${eur(totalDeducoes / 12)} que de outra forma iriam para o Estado.`,
+    `Maximize as dedu\u00e7\u00f5es sobre o seu IRS de ${eur(s.irsAnual)}: exija fatura em despesas de sa\u00fade (recupera at\u00e9 ${eur(deducaoMaxSaude)}), educa\u00e7\u00e3o (at\u00e9 ${eur(deducaoMaxEduc)}), rendas (at\u00e9 ${eur(DEDUCAO_RENDAS_2026)}) e supermercado/combust\u00edvel (at\u00e9 250\u00a0\u20ac). Total potencial: ${eur(totalDeducoes)}, que reduz a taxa efetiva de ${pct(d.taxaEfetiva)} para ${pct(d.taxaEfetiva - (totalDeducoes / d.brutoAnual))}.`,
   ];
   tips.push({
     titulo: "Dedu\u00e7\u00f5es \u00e0 Coleta",

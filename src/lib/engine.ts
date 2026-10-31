@@ -16,8 +16,8 @@ import {
   IRS_JOVEM_ESCALOES,
   DEDUCAO_POR_DEPENDENTE,
   MINIMO_EXISTENCIA_2026,
-  getTaxaRetencao,
   retencaoMensal as retencaoTabela,
+  AJUSTE_NOVEMBRO_2026,
   type EstadoCivil,
 } from "./baremes-2026";
 
@@ -141,6 +141,22 @@ export function calculateRetencao(
 }
 
 /**
+ * Retenção de um pagamento feito em novembro de 2026 (Despacho n.º 12523-A/2026) : metade da retenção
+ * normal, salvo acima do penúltimo escalão. Devolve null fora do período.
+ */
+export function retencaoNovembro2026(
+  grossMonthly: number,
+  maritalStatus: EstadoCivil,
+  retencaoNormal: number,
+  hoje: string = new Date().toISOString().slice(0, 10)
+): number | null {
+  const a = AJUSTE_NOVEMBRO_2026;
+  if (hoje < "2026-10-14" || hoje > a.fim) return null;
+  if (grossMonthly > a.limitePenultimo[maritalStatus]) return retencaoNormal;
+  return round2(retencaoNormal * a.fator);
+}
+
+/**
  * Cálculo completo: do salário bruto ao líquido.
  */
 export function calculateSalary(input: SalaryInput): SalaryResult {
@@ -189,19 +205,22 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
   // página dedicada ao regime mostrava exatamente o mesmo líquido que a de um
   // solteiro sem benefício, o desconto existia no IRS anual mas nunca chegava
   // ao salário do mês.
-  const retencaoTaxaTabela = getTaxaRetencao(grossMonthly, maritalStatus, dependents);
+  // Le montant se calcule directement depuis la table puis s'arrondit une seule fois : passer
+  // par un taux arrondi à 4 décimales faisait perdre un cêntimo (2 500 €, tabela III : 194,05 au
+  // lieu de 194,06).
+  const retencaoTabelaMensal = retencaoTabela(grossMonthly, maritalStatus, dependents);
   const reducaoJovem =
     irsJovemDesconto > 0 && irsAnnualAntesJovem > 0
       ? irsJovemDesconto / irsAnnualAntesJovem
       : 0;
-  const retencaoTaxa = round2(retencaoTaxaTabela * (1 - reducaoJovem) * 10000) / 10000;
-  const retencaoMensal = round2(grossMonthly * retencaoTaxa);
+  const retencaoMensal = round2(retencaoTabelaMensal * (1 - reducaoJovem));
+  const retencaoTaxa = grossMonthly > 0 ? retencaoMensal / grossMonthly : 0;
 
   /* ── Subsídios de Natal e de férias : a retenção calcula-se em separado, com a mesma tabela (Despacho, n.º 10) ── */
   const subsidioNatalBruto = grossMonthly;
-  const subsidioNatalLiquido = round2(subsidioNatalBruto - round2(subsidioNatalBruto * TSU_TRABALHADOR) - round2(subsidioNatalBruto * retencaoTaxa));
+  const subsidioNatalLiquido = round2(subsidioNatalBruto - round2(subsidioNatalBruto * TSU_TRABALHADOR) - retencaoMensal);
   const subsidioFeriasBruto = grossMonthly;
-  const subsidioFeriasLiquido = round2(subsidioFeriasBruto - round2(subsidioFeriasBruto * TSU_TRABALHADOR) - round2(subsidioFeriasBruto * retencaoTaxa));
+  const subsidioFeriasLiquido = round2(subsidioFeriasBruto - round2(subsidioFeriasBruto * TSU_TRABALHADOR) - retencaoMensal);
 
   /* ── Salário líquido mensal (nos 12 meses normais) ── */
   const netMonthly = round2(grossMonthly - tsu.employee - retencaoMensal);
