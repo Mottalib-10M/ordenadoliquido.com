@@ -39,7 +39,11 @@ der die das den dem des ein eine einen und für fur von mit im zu wie viel was i
 el los las del por para con y que cuánto cuanto cómo como mi tu su al
 il lo gli dei delle degli una e per con nel nella come quanto quanti di da
 o os as do da dos das um uma com no na quanto
-het een van voor op hoe wat
+het een van voor op hoe wat naar met uit bij
+dla jak ile przy oraz czy
+avec sans where when hasta desde
+för och eller med och til fra
+في من على إلى الى عن مع حسب لكل عند ما هل كم كيف
 """.split())
 SERVICE = re.compile(
     r"/(about|about-us|a-propos|qui-sommes-nous|sobre|sobre-nosotros|quienes-somos|chi-siamo|ueber-uns|uber-uns"
@@ -52,6 +56,8 @@ SERVICE = re.compile(
     r"|terminos|termini|condizioni|kayttoehdot|villkor|regulamin|kullanim-kosullari|syarat"
     r"|contact|kontakt|contacto|contatti|contato|yhteystiedot|kontakta|iletisim|hubungi|widget|embed"
     r"|editorial|editorial-policy|charte-editoriale|politique-editoriale|redactiebeleid|redaktionsrichtlinien|politica-editorial|politica-editoriale"
+    r"|(methode|metodo|method|methodology)-(de-|di-|of-)?(calcul|calculo|calcolo|calculation)[a-z-]*|calculation-method|how-we-calculate"
+    r"|tietoa-meista|om-oss|meista|[a-z]+-policy|redaktionelle-grundsaetze|redactiestatuut|metodik|methodik(-[a-z-]+)?|termos|termos-de-uso|(methodologie|methodology|metodologia|methode|method)-[a-z-]+"
     r"|(politica|politique|politika|policy|polityka|kebijakan)(-de)?-[a-z-]+)(/|$)")
 
 
@@ -97,7 +103,9 @@ def norm(s):
     """Mots du texte. Japonais, chinois et coréen s'écrivent sans espaces (ou presque) : un titre entier faisait un
     seul « mot » (pensionretraite.com, 2026-11-13). Ces suites sont découpées en paires de caractères."""
     out = []
-    for w in re.findall(r"[^\W_]+", html.unescape(s).lower()):
+    s = re.sub(r"[\u064B-\u0652\u0670\u0640]", "", html.unescape(s))  # voyelles et tatweel arabes (goldmizan, 2026-11-13)
+    s = s.replace("İ", "i")  # turc : « İ ».lower() donnait « i » + point combinant (bayramkacgun, 2026-11-13)
+    for w in re.findall(r"[^\W_]+", s.lower()):
         if CJK.search(w) and len(w) > 2:
             out += [w[i:i + 2] for i in range(len(w) - 1)]
         else:
@@ -116,12 +124,12 @@ def texte(s):
 
 def analyse(h):
     t = html.unescape(attr(h, r"<title[^>]*>(.*?)</title>")).strip()
-    key = re.split(r"[:|(—–?｜：（【？]| 20\d\d", t)[0].strip()
+    key = re.split(r"[:|(—–?｜：（【？]| - | 20\d\d", t)[0].strip()  # « - » entouré d'espaces coupe aussi (éditeur, 2026-11-14)
     kw = [w for w in norm(key) if w not in STOP and (len(w) > 2 or w.isdigit() or CJK.search(w))]
     main = re.sub(r"<(script|style|nav|footer)[\s\S]*?</\1>", " ", h)
     h1 = texte(attr(main, r"<h1[^>]*>(.*?)</h1>"))
     apres = main.split("</h1>", 1)[-1]
-    m = re.search(r"<p[^>]*>(.*?)</p>", apres, re.S)
+    m = re.search(r"<p(?:\s[^>]*)?>(.*?)</p>", apres, re.S)  # pas <path> des icônes SVG (ksefnarzedzia, 2026-11-13)
     p1 = texte(m.group(1) if m else "")
     h2s = [texte(x) for x in re.findall(r"<h2[^>]*>(.*?)</h2>", main, re.S)]
 
