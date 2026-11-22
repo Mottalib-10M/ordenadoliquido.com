@@ -272,6 +272,12 @@ import ContextoFolha from '../components/ContextoFolha.astro';
     <h2 class="text-2xl font-bold text-neutral-900 mb-3">O acerto anual nesta situação</h2>
     <p class="text-neutral-700 leading-relaxed">{situacao.acertoAnual}</p>
   </section>
+  {situacao.casoPratico && (
+    <section class="max-w-6xl mx-auto mt-12 border-t border-neutral-200 pt-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Um caso prático</h2>
+      <p class="text-neutral-700 leading-relaxed">{situacao.casoPratico}</p>
+    </section>
+  )}
   <ComparacaoSituacoes slugAtual={situacao.slug} />
   <FontesOficiais />
   <ContextoFolha

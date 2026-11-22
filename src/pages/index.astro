@@ -8,6 +8,18 @@ import { calculateSalary } from '../lib/engine';
 const n = (x: number, d = 0) => new Intl.NumberFormat('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
 const pct = (x: number) => new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 }).format(x * 100) + '%';
 const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', dependents: 0, irsJovem: 0 });
+const r1500 = calculateSalary({ grossMonthly: 1500, maritalStatus: 'solteiro', dependents: 0, irsJovem: 0 });
+const r1500d2 = calculateSalary({ grossMonthly: 1500, maritalStatus: 'solteiro', dependents: 2, irsJovem: 0 });
+const eur = (x: number) => `${n(x, 2)} €`;
+const faqs = [
+  { q: 'Quanto recebe líquido quem ganha o salário mínimo em 2026?', a: `Com o salário mínimo de ${n(SMN)} € brutos, um trabalhador solteiro sem dependentes recebe ${eur(smn.netMonthly)} por mês. A retenção na fonte de IRS é de ${eur(smn.retencaoMensal)}, porque as tabelas de 2026 dispensam de retenção este nível de salário, e o único desconto é a contribuição de 11% para a Segurança Social, ${eur(smn.tsuEmployee)}. Os subsídios de Natal e de férias seguem a mesma regra.` },
+  { q: 'A retenção na fonte é o IRS que vou pagar no fim do ano?', a: 'Não. A retenção mensal é um adiantamento calculado por tabelas que supõem o mesmo salário todos os meses e ignoram as suas despesas dedutíveis. O imposto definitivo só se apura na declaração anual, entregue entre abril e junho do ano seguinte, com os escalões e as deduções à coleta. A diferença dá reembolso quando se reteve a mais, ou pagamento quando se reteve a menos.' },
+  { q: 'O simulador conta com os subsídios de Natal e de férias?', a: 'Sim. O líquido mensal corresponde a um dos doze meses de vencimento, e o líquido anual soma catorze pagamentos: os doze meses e os dois subsídios, cada um igual a um mês de salário base. Cada subsídio tem retenção própria, calculada à parte com a tabela do mês, e desconta os mesmos 11% de Segurança Social. Quem pede os subsídios em duodécimos recebe o mesmo valor bruto anual, repartido pelos doze meses.' },
+  { q: 'Porque desceu a retenção de IRS no recibo de novembro de 2026?', a: 'O Despacho n.º 12523-A/2026 reduziu para metade a retenção dos rendimentos pagos entre 1 e 30 de novembro de 2026 no continente, incluindo o subsídio de Natal pago nesse mês, salvo para salários acima do penúltimo escalão das tabelas. A partir de 1 de dezembro voltam as tabelas normais. O imposto do ano não muda: a retenção menor de novembro é acertada na declaração.' },
+  { q: 'Ter filhos aumenta o salário líquido mensal?', a: `Sim, através da retenção. Cada dependente reduz a retenção mensal por uma parcela fixa da tabela: para um salário bruto de 1.500 €, um trabalhador solteiro passa de ${eur(r1500.netMonthly)} líquidos sem dependentes para ${eur(r1500d2.netMonthly)} com dois. Na declaração anual, cada dependente dá ainda uma dedução à coleta de ${n(DEDUCAO_POR_DEPENDENTE)} €, majorada para as crianças mais pequenas.` },
+  { q: 'O simulador serve para quem passa recibos verdes?', a: 'Não: o simulador aplica as regras do trabalho por conta de outrem, com 11% de Segurança Social e as tabelas de retenção da categoria A. Um trabalhador independente desconta 21,4% sobre 70% do rendimento do trimestre e tem retenção própria nos recibos, sem subsídios de Natal nem de férias. O guia sobre recibos verdes e conta de outrem compara as duas situações com o mesmo valor bruto.' },
+];
+const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
 ---
 
 <Layout
@@ -15,6 +27,7 @@ const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', depe
   description="Calcule o seu salário líquido em Portugal para 2026. Simulador gratuito com escalões de IRS, TSU, subsídio de Natal, subsídio de férias, IRS Jovem e deduções."
   canonical="/"
 >
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <!--
     Hero. La version precedente etait un degrade vert sur trois nuances, le
     motif le plus commun du web, avec un titre centre et rien d'autre. Ici le
@@ -63,6 +76,11 @@ const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', depe
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-lg prose-neutral max-w-none">
 
       <h2 class="text-2xl md:text-3xl font-bold text-neutral-900 mb-6">Como Calcular o Sal&aacute;rio L&iacute;quido em Portugal em 2026</h2>
+
+      {/* §21 : paragrafo citavel, escrito para o acolhimento. */}
+      <p>
+        Em 2026, o sal&aacute;rio l&iacute;quido de um trabalhador por conta de outrem em Portugal obt&eacute;m-se retirando ao sal&aacute;rio bruto dois descontos mensais: a contribui&ccedil;&atilde;o do trabalhador para a Seguran&ccedil;a Social, de 11%, e a reten&ccedil;&atilde;o na fonte de IRS, calculada pelas tabelas de 2026 em fun&ccedil;&atilde;o do sal&aacute;rio, do estado civil e do n&uacute;mero de dependentes. Um trabalhador solteiro sem dependentes com 1.500&nbsp;&euro; brutos recebe {eur(r1500.netMonthly)} l&iacute;quidos por m&ecirc;s, depois de {eur(r1500.tsuEmployee)} de Seguran&ccedil;a Social e {eur(r1500.retencaoMensal)} de reten&ccedil;&atilde;o. Com o sal&aacute;rio m&iacute;nimo de {n(SMN)}&nbsp;&euro;, recebe {eur(smn.netMonthly)}. A reten&ccedil;&atilde;o mensal &eacute; apenas um adiantamento: o imposto definitivo apura-se na declara&ccedil;&atilde;o anual, com os escal&otilde;es e as dedu&ccedil;&otilde;es do ano, e pode dar reembolso ou pagamento. Os subs&iacute;dios de Natal e de f&eacute;rias juntam dois meses ao ano com os mesmos descontos, e o IRS Jovem reduz o imposto nos primeiros anos de trabalho.
+      </p>
 
       <p>
         Compreender o sal&aacute;rio l&iacute;quido em Portugal exige conhecer v&aacute;rios conceitos fiscais e contributivos. O sal&aacute;rio bruto &eacute; o valor acordado com a entidade empregadora antes de quaisquer descontos. J&aacute; o sal&aacute;rio l&iacute;quido &eacute; o montante que efetivamente recebe na sua conta banc&aacute;ria ap&oacute;s todos os descontos obrigat&oacute;rios, nomeadamente a contribui&ccedil;&atilde;o para a Seguran&ccedil;a Social e a reten&ccedil;&atilde;o na fonte de IRS.
@@ -200,6 +218,19 @@ const smn = calculateSalary({ grossMonthly: SMN, maritalStatus: 'solteiro', depe
         </p>
       </div>
 
+    </div>
+  </section>
+  <section class="py-12 md:py-16 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl md:text-3xl font-bold text-neutral-900 mb-6">Perguntas frequentes sobre o sal&aacute;rio l&iacute;quido</h2>
+      <div class="space-y-3">
+        {faqs.map((f) => (
+          <details class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer font-semibold text-neutral-800 hover:text-primary-600 list-none">{f.q}</summary>
+            <p class="px-4 pb-4 text-neutral-700 leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
   <ExemploDetalhado bruto={1500} />

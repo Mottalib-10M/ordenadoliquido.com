@@ -24,6 +24,8 @@ export interface SituacaoEntry {
   errosFrequentes: string[];
   /** Ce que la declaration annuelle reserve dans cette situation. */
   acertoAnual: string;
+  /** Caso pratico escrito para a situacao (§6 : as paginas de situacao nao se clonam). */
+  casoPratico?: string;
   /** Explication du calcul et exemples chiffres, propres a la situation. */
   calculo: {
     intro: string;
@@ -245,6 +247,7 @@ export const SITUACOES: SituacaoEntry[] = [
       "Escolher a tributação conjunta por hábito sem simular a separada, que pode compensar quando os rendimentos são próximos.",
       "Repartir os dependentes a 50 % na tributação separada sem verificar qual dos dois beneficia mais das deduções correspondentes."
 ],
+    casoPratico: "Um exemplo mostra onde está a escolha. Imagine um casal em que um dos cônjuges ganha o dobro do outro. Durante o ano, cada empregador aplica a tabela de casado, dois titulares, ao salário que paga, e nenhum dos dois sabe quanto ganha o outro. Entre abril e junho do ano seguinte, a declaração conjunta soma os dois rendimentos coletáveis, divide o total por dois, aplica a taxa a essa metade e multiplica a coleta por dois: o salário mais alto deixa de ser tributado no seu escalão próprio, e é daí que costuma vir o reembolso. Se os dois salários forem quase iguais, o quociente conjugal pouco muda e a tributação separada pode empatar ou até compensar, sobretudo quando as despesas dedutíveis estão quase todas em nome de um só. O Portal das Finanças mostra as duas simulações antes da submissão: vale a pena abrir ambas em vez de aceitar a opção que vem pré-preenchida.",
     acertoAnual: "É a situação em que o acerto anual reserva mais surpresas, e por uma razão estrutural: cada empregador retém sobre o salário que paga, sem conhecer o rendimento do outro cônjuge. Cada retenção está correta isoladamente, mas a soma pode afastar-se do imposto devido pelo agregado. Com rendimentos desiguais, a tributação conjunta costuma gerar reembolso, porque o quociente conjugal faz descer a taxa marginal. Com rendimentos próximos, vale a pena simular também a tributação separada antes de submeter a declaração.",
     calculo: {
   "intro": "Quando ambos os cônjuges trabalham, cada empregador retém sobre o salário que paga, sem conhecer o rendimento do outro. O cálculo mensal é portanto independente para cada um, e só a declaração anual junta as duas realidades.",
@@ -343,6 +346,7 @@ export const SITUACOES: SituacaoEntry[] = [
       "Julgar que o benefício reduz a contribuição para a Segurança Social: os 11 % mantêm-se na totalidade, e os anos contam para a pensão.",
       "Contar os anos de benefício como necessariamente seguidos: um ano sem rendimentos do trabalho não consome uma das utilizações."
 ],
+    casoPratico: "Um caso concreto: uma jovem que começa o primeiro emprego por conta de outrem em setembro, já sem ser considerada dependente dos pais. Esse ano conta como o primeiro do benefício, com a isenção mais alta, mesmo que só tenha trabalhado quatro meses; quem começa no fim do ano usa assim o ano de isenção total sobre pouco rendimento. Se comunicar a situação ao empregador logo no primeiro recibo, a retenção desses meses já desce; se não o fizer, desconta como qualquer colega e recupera a diferença no reembolso do ano seguinte. A Segurança Social de 11 % é descontada em todos os meses, sem exceção. Se mais tarde passar um ano inteiro sem rendimentos do trabalho, por exemplo num mestrado no estrangeiro, esse ano não é contado e o benefício retoma onde tinha parado.",
     acertoAnual: "A declaração anual continua obrigatória e é nela que a isenção é confirmada face à retenção efetuada durante o ano. Quem comunicou a situação ao empregador a tempo verá um acerto reduzido; quem não o fez recupera todo o benefício de uma só vez, mas com um ano de atraso. As deduções à coleta aplicam-se normalmente sobre a parte do rendimento que não está isenta, pelo que continua a valer a pena pedir fatura com NIF mesmo nos anos de isenção mais elevada.",
     calculo: {
   "intro": "O IRS Jovem não altera a contribuição para a Segurança Social: age apenas sobre a parte do rendimento sujeita a imposto. Uma percentagem do rendimento do trabalho fica isenta, dentro de um teto, durante um número limitado de anos.",
