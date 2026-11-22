@@ -17,24 +17,47 @@ export interface EscalaoIRS {
   parcelaAbater: number;
 }
 
+/* Taxas dos seis primeiros escalões baixadas para os rendimentos de 2026 pelo Decreto-Lei n.º 212/2026, de 4 de novembro
+   (ao abrigo da Lei n.º 64-B/2026), em vigor a 5 de novembro, aplicadas na liquidação de 2026 (Circular AT n.º 5/2026).
+   Limites inalterados. Antes : 12,5 / 15,7 / 21,2 / 24,1 / 31,1 / 34,9 %. Lido em 2026-11-22. */
 const ESCALOES_BASE: Array<[number, number]> = [
-  [8_342, 0.125],
-  [12_587, 0.157],
-  [17_838, 0.212],
-  [23_089, 0.241],
-  [29_397, 0.311],
-  [43_090, 0.349],
+  [8_342, 0.122],
+  [12_587, 0.152],
+  [17_838, 0.207],
+  [23_089, 0.236],
+  [29_397, 0.306],
+  [43_090, 0.346],
   [46_566, 0.431],
   [86_634, 0.446],
   [Infinity, 0.48],
 ];
 /** A parcela a abater de cada escalão resulta dos limites e das taxas : não se escreve à mão. */
-export const ESCALOES_IRS_2026: EscalaoIRS[] = ESCALOES_BASE.reduce<EscalaoIRS[]>((acc, [limiteMax, taxa], i) => {
+const comParcela = (base: Array<[number, number]>): EscalaoIRS[] => base.reduce<EscalaoIRS[]>((acc, [limiteMax, taxa], i) => {
   const ant = acc[i - 1];
   const parcelaAbater = i === 0 ? 0 : Math.round((ant.parcelaAbater + ant.limiteMax * (taxa - ant.taxa)) * 100) / 100;
   acc.push({ limiteMax, taxa, parcelaAbater });
   return acc;
 }, []);
+export const ESCALOES_IRS_2026: EscalaoIRS[] = comParcela(ESCALOES_BASE);
+
+/**
+ * Escalões de 2027 PROPOSTOS : Proposta de Lei n.º 110/XVII/2.ª (Orçamento do Estado para 2027), artigo 60.º, nova redação
+ * do artigo 68.º do CIRS : limites atualizados em 3,88 %, taxas de 2026. Votação final global marcada para 24 de novembro
+ * de 2026 : não é lei. Mínimo de existência proposto (art. 70.º) : o maior entre 13 580 € e 1,5 × 14 × IAS.
+ * Fonte : https://app.parlamento.pt/OE2027/HTML/OrcamentoEstado2027.html, lido em 2026-11-22.
+ */
+export const ESCALOES_IRS_2027_PROPOSTA: EscalaoIRS[] = comParcela([
+  [8_666, 0.122],
+  [13_075, 0.152],
+  [18_530, 0.207],
+  [23_985, 0.236],
+  [30_538, 0.306],
+  [44_762, 0.346],
+  [48_373, 0.431],
+  [89_995, 0.446],
+  [Infinity, 0.48],
+]);
+export const MINIMO_EXISTENCIA_2027_PROPOSTA = 13_580;
 
 /* ────────────────────────── Segurança Social (TSU) ─────────────────────────── */
 

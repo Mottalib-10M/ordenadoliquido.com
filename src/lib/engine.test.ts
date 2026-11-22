@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { calculateTSU, calculateIRS, calculateRetencao, calculateSalary, retencaoNovembro2026 } from "./engine";
+import { ESCALOES_IRS_2027_PROPOSTA } from "./baremes-2026";
 import {
   TSU_TRABALHADOR,
   TSU_EMPREGADOR,
@@ -44,15 +45,15 @@ describe("calculateIRS", () => {
     expect(calculateIRS(-1000, "solteiro", 0)).toBe(0);
   });
 
-  it("should apply 12.5% for the first bracket, less the 250 € general deduction", () => {
+  it("should apply 12.2% (Decreto-Lei n.º 212/2026) for the first bracket, less the 250 € general deduction", () => {
     const result = calculateIRS(5000, "solteiro", 0);
-    expect(result).toBe(5000 * 0.125 - 250);
+    expect(result).toBe(5000 * 0.122 - 250);
   });
 
   it("should apply progressive rates for higher income", () => {
     const result = calculateIRS(10000, "solteiro", 0);
-    // 10000 * 0.157 - 266.94 (parcela a abater) - 250 = 1053.06
-    expect(result).toBe(1053.06);
+    // 10000 * 0.152 - 250.26 (parcela a abater) - 250 = 1019.74
+    expect(result).toBe(1019.74);
   });
 
   it("should reduce tax by dependent deduction", () => {
@@ -63,13 +64,21 @@ describe("calculateIRS", () => {
 
   it("should handle the top bracket (>86,634)", () => {
     const result = calculateIRS(100_000, "solteiro", 0);
-    // 100000 * 0.48 - 11387.28 (parcela a abater) - 250
-    expect(result).toBeCloseTo(36362.72, 1);
+    // 100000 * 0.48 - 11558.65 (parcela a abater) - 250
+    expect(result).toBeCloseTo(36191.35, 1);
   });
 
   it("applies the conjugal quotient for a married single earner", () => {
-    // 30000 / 2 = 15000 : 15000 * 0.212 - 959.23 = 2220.77 ; x 2 = 4441.54 ; less 2 x 250
-    expect(calculateIRS(30_000, "casado1titular", 0)).toBeCloseTo(3941.54, 1);
+    // 30000 / 2 = 15000 : 15000 * 0.207 - 942.54 = 2162.46 ; x 2 = 4324.92 ; less 2 x 250
+    expect(calculateIRS(30_000, "casado1titular", 0)).toBeCloseTo(3824.92, 1);
+  });
+
+  it("2027 proposal (PL 110/XVII): limits +3.88 %, same rates", () => {
+    // 20000 : 4.º escalão 2027, 20000 * 0.236 - 1516.47 - 250 = 2953.53 ; 2026 : 20000 * 0.236 - 1459.84 - 250 = 3010.16
+    expect(calculateIRS(20_000, "solteiro", 0, ESCALOES_IRS_2027_PROPOSTA)).toBeCloseTo(2953.53, 1);
+    expect(calculateIRS(20_000, "solteiro", 0)).toBeCloseTo(3010.16, 1);
+    // média da coluna B da proposta no limite do 6.º escalão : 24,732 %
+    expect(calculateIRS(44_762, "solteiro", 0, ESCALOES_IRS_2027_PROPOSTA) + 250).toBeCloseTo(44_762 * 0.24732, 0);
   });
 });
 

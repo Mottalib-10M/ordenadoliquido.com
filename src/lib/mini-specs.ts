@@ -1,6 +1,7 @@
 /** Mini-simuladores dos guias (RECETTE §9.3), calculados pelo motor salarial português. */
 import { calculateSalary, calculateIRS, calculateRetencao } from './engine';
 import type { MiniSpec } from './mini-types';
+import { ESCALOES_IRS_2027_PROPOSTA } from './baremes-2026';
 
 const eur = (x: number, d = 2) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR', minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
 const pct = (x: number) => new Intl.NumberFormat('pt-PT', { style: 'percent', maximumFractionDigits: 1 }).format(x > 1 ? x / 100 : x);
@@ -19,6 +20,10 @@ const SPECS: Record<string, MiniSpec> = {
   } },
   escaloes: { title: 'IRS anual pelo seu rendimento coletável', cta: 'Simulador completo', inputs: [{ id: 'c', label: 'Rendimento coletável anual', def: 20000, unit: '€', max: 5000000 }], run: ({ c }) => {
     const t = calculateIRS(c, 'solteiro', 0); return { head: ['IRS anual', eur(t, 0)], rows: [['Taxa média', pct(c ? t / c : 0)], ['Por mês, em 14 prestações', eur(t / 14)]] };
+  } },
+  escaloes2027: { title: 'IRS de 2027 com os escalões propostos', cta: 'Simulador completo', inputs: [{ id: 'c', label: 'Rendimento coletável anual', def: 20000, unit: '€', max: 5000000 }], run: ({ c }) => {
+    const a = calculateIRS(c, 'solteiro', 0); const n = calculateIRS(c, 'solteiro', 0, ESCALOES_IRS_2027_PROPOSTA);
+    return { head: ['IRS de 2027, proposta do Orçamento', eur(n, 0)], rows: [['IRS de 2026, mesmo rendimento', eur(a, 0)], ['Diferença por ano', eur(n - a, 0)], ['Taxa média em 2027', pct(c ? n / c : 0)]], note: 'Não casado, sem dependentes. Proposta de Lei n.º 110/XVII: ainda não é lei.' };
   } },
   deducoes: { title: 'Quanto valem os seus dependentes no IRS?', cta: 'Simulador completo', inputs: [bruto(1800), { id: 'd', label: 'Dependentes', def: 2, unit: '', max: 10 }], run: ({ b, d }) => {
     const a = S(b, 0, 0); const x = S(b, 0, d); return { head: ['IRS poupado por ano', eur(a.irsAnnual - x.irsAnnual, 0)], rows: [['IRS sem dependentes', eur(a.irsAnnual, 0)], ['IRS com dependentes', eur(x.irsAnnual, 0)]] };

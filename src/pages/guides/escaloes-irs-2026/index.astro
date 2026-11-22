@@ -23,7 +23,7 @@ const faqSchema = {
       "name": "Quantos escalões de IRS existem em 2026?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Em 2026, existem 9 escalões de IRS em Portugal. As taxas marginais variam entre 12,5% para rendimentos até 8.342€ e 48% para rendimentos superiores a 86.634€, acrescida de uma taxa adicional de solidariedade para rendimentos muito elevados. Cada escalão tem a sua própria taxa, aplicada apenas à parcela de rendimento que nele cai: passar de escalão nunca faz descer o líquido, ao contrário do que se pensa com frequência."
+        "text": "Em 2026, existem 9 escalões de IRS em Portugal. As taxas marginais variam entre 12,2% para rendimentos até 8.342€ e 48% para rendimentos superiores a 86.634€, acrescida de uma taxa adicional de solidariedade para rendimentos muito elevados. Cada escalão tem a sua própria taxa, aplicada apenas à parcela de rendimento que nele cai: passar de escalão nunca faz descer o líquido, ao contrário do que se pensa com frequência."
       }
     },
     {
@@ -31,7 +31,7 @@ const faqSchema = {
       "name": "A taxa de IRS aplica-se sobre todo o rendimento?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Não. O IRS em Portugal funciona por escalões progressivos: cada taxa marginal aplica-se apenas à parte do rendimento que se enquadra nesse escalão. Por exemplo, se ganha 15.000€ coletáveis, os primeiros 8.342€ são tributados a 12,5%, os seguintes 4.245€ a 15,7% e o restante a 21,2%."
+        "text": "Não. O IRS em Portugal funciona por escalões progressivos: cada taxa marginal aplica-se apenas à parte do rendimento que se enquadra nesse escalão. Por exemplo, se ganha 15.000€ coletáveis, os primeiros 8.342€ são tributados a 12,2%, os seguintes 4.245€ a 15,2% e o restante a 20,7%."
       }
     },
     {
@@ -78,7 +78,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
 
       <div class="prose prose-neutral max-w-none">
         <p class="text-lg text-neutral-600 leading-relaxed mb-8">
-          Os escalões de IRS determinam quanto imposto sobre o rendimento cada contribuinte paga em Portugal. Em 2026, a tabela mantém a estrutura de nove escalões progressivos, com taxas que variam entre 12,5% e 48%. Neste guia, explicamos em detalhe como funcionam os escalões, como se calcula o imposto e apresentamos exemplos práticos para diferentes níveis de rendimento.
+          Os escalões de IRS determinam quanto imposto sobre o rendimento cada contribuinte paga em Portugal. Em 2026, a tabela mantém a estrutura de nove escalões progressivos, com taxas que variam entre 12,2% e 48%. Neste guia, explicamos em detalhe como funcionam os escalões, como se calcula o imposto e apresentamos exemplos práticos para diferentes níveis de rendimento.
         </p>
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">O que são os escalões de IRS?</h2>
@@ -89,7 +89,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
           Este princípio de progressividade está consagrado na Constituição da República Portuguesa e visa garantir que quem ganha mais contribui proporcionalmente mais para o financiamento dos serviços públicos. Ao contrário do que muitas pessoas pensam, a taxa mais alta não se aplica à totalidade do rendimento, mas apenas à parcela que ultrapassa o limite do escalão anterior.
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          Por exemplo, se o seu rendimento coletável for de 20.000 euros anuais, não pagará 24,1% sobre os 20.000 euros. Em vez disso, os primeiros 8.342 euros são tributados a 12,5%, os seguintes 4.245 euros a 15,7%, e assim sucessivamente. Este mecanismo garante uma tributação justa e gradual.
+          Por exemplo, se o seu rendimento coletável for de 20.000 euros anuais, não pagará 23,6% sobre os 20.000 euros. Em vez disso, os primeiros 8.342 euros são tributados a 12,2%, os seguintes 4.245 euros a 15,2%, e assim sucessivamente. Este mecanismo garante uma tributação justa e gradual.
         </p>
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Tabela de Escalões de IRS 2026</h2>
@@ -128,24 +128,24 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Exemplo prático: rendimento de 25.000 € coletáveis</h2>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          Imaginemos um trabalhador solteiro sem dependentes com um rendimento coletável anual de 25.000 euros. Este valor enquadra-se no 5.º escalão (taxa marginal de 31,10%, parcela a abater de 3.092,75 €).
+          Imaginemos um trabalhador solteiro sem dependentes com um rendimento coletável anual de 25.000 euros. Este valor enquadra-se no 5.º escalão (taxa marginal de 30,60%, parcela a abater de 3.076,07 €).
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          <strong>Cálculo:</strong> IRS = (25.000 € × 31,10%) − 3.092,75 € = 7.775,00 € − 3.092,75 € = 4.682,25 €
+          <strong>Cálculo:</strong> IRS = (25.000 € × 30,60%) − 3.076,07 € = 7.650,00 € − 3.076,07 € = 4.573,93 €
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          A taxa efetiva neste caso seria de 4.682,25 € ÷ 25.000 € = 18,73%, ou seja, significativamente inferior à taxa marginal de 31,10%. Esta diferença ilustra perfeitamente como o sistema progressivo protege os contribuintes com rendimentos médios.
+          A taxa efetiva neste caso seria de 4.573,93 € ÷ 25.000 € = 18,30%, ou seja, significativamente inferior à taxa marginal de 30,60%. Esta diferença ilustra perfeitamente como o sistema progressivo protege os contribuintes com rendimentos médios.
         </p>
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Exemplo prático: rendimento de 45.000 € coletáveis</h2>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          Consideremos agora um contribuinte casado, único titular, sem dependentes, com um rendimento coletável de 45.000 euros. Na tributação conjunta aplica-se o quociente conjugal: o rendimento é dividido por dois, 22.500 euros, valor que cai no 4.º escalão (taxa marginal de 24,10%, parcela a abater de 1.476,52 €).
+          Consideremos agora um contribuinte casado, único titular, sem dependentes, com um rendimento coletável de 45.000 euros. Na tributação conjunta aplica-se o quociente conjugal: o rendimento é dividido por dois, 22.500 euros, valor que cai no 4.º escalão (taxa marginal de 23,60%, parcela a abater de 1.459,84 €).
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          <strong>Cálculo:</strong> IRS = [(22.500 € × 24,10%) − 1.476,52 €] × 2 = 3.945,98 € × 2 = 7.891,96 €
+          <strong>Cálculo:</strong> IRS = [(22.500 € × 23,60%) − 1.459,84 €] × 2 = 3.850,16 € × 2 = 7.700,32 €
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          A taxa efetiva para este rendimento é de 17,54%. Sem o quociente conjugal, os mesmos 45.000 euros cairiam no 7.º escalão, com uma taxa marginal de 43,10%: é a divisão por dois que explica a diferença. O mesmo mecanismo aplica-se aos casados com dois titulares que optem pela tributação conjunta, sobre a soma dos dois rendimentos.
+          A taxa efetiva para este rendimento é de 17,11%. Sem o quociente conjugal, os mesmos 45.000 euros cairiam no 7.º escalão, com uma taxa marginal de 43,10%: é a divisão por dois que explica a diferença. O mesmo mecanismo aplica-se aos casados com dois titulares que optem pela tributação conjunta, sobre a soma dos dois rendimentos.
         </p>
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Da dedução específica ao rendimento coletável</h2>
@@ -190,7 +190,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
 
         <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Evolução dos escalões: 2024 a 2026</h2>
         <p class="text-neutral-700 leading-relaxed mb-4">
-          Nos últimos anos, os escalões de IRS têm sido atualizados para acompanhar a inflação e aliviar a carga fiscal sobre a classe média. Em 2024, o número de escalões foi aumentado de sete para nove, com reduções nas taxas marginais dos escalões intermédios. Em 2025, as taxas voltaram a descer até ao 8.º escalão. Em 2026, os limites dos escalões foram atualizados em 3,51% e as taxas do 2.º ao 5.º escalão desceram mais 0,3 pontos percentuais.
+          Nos últimos anos, os escalões de IRS têm sido atualizados para acompanhar a inflação e aliviar a carga fiscal sobre a classe média. Em 2024, o número de escalões foi aumentado de sete para nove, com reduções nas taxas marginais dos escalões intermédios. Em 2025, as taxas voltaram a descer até ao 8.º escalão. Em 2026, os limites dos escalões foram atualizados em 3,51% e as taxas do 2.º ao 5.º escalão desceram mais 0,3 pontos percentuais. Em novembro de 2026, o Decreto-Lei n.º 212/2026 baixou ainda as taxas dos seis primeiros escalões, entre 0,3 e 0,5 pontos, para todos os rendimentos de 2026: são as taxas da tabela acima, aplicadas na declaração entregue em 2027. Para o ano seguinte, a proposta de Orçamento atualiza os limites em 3,88%: veja os <a href="/guides/escaloes-irs-2027/" class="text-primary-600 hover:text-primary-700">escalões de IRS 2027</a>.
         </p>
         <p class="text-neutral-700 leading-relaxed mb-4">
           Esta evolução reflete o compromisso político de tornar o sistema fiscal mais justo e de reduzir a carga tributária sobre os rendimentos do trabalho, especialmente na faixa intermédia. É importante consultar as tabelas atualizadas todos os anos, uma vez que pequenas alterações nos limites e nas taxas podem ter um impacto significativo no imposto a pagar.
@@ -202,13 +202,13 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
           <div class="bg-white rounded-xl border border-neutral-200 p-6">
             <h3 class="text-lg font-bold text-neutral-900 mb-2">Quantos escalões de IRS existem em 2026?</h3>
             <p class="text-neutral-600 leading-relaxed">
-              Em 2026, existem 9 escalões de IRS em Portugal. As taxas marginais variam entre 12,5% para rendimentos até 8.342 € e 48% para rendimentos superiores a 86.634 €, acrescida de uma taxa adicional de solidariedade para rendimentos muito elevados.
+              Em 2026, existem 9 escalões de IRS em Portugal. As taxas marginais variam entre 12,2% para rendimentos até 8.342 € e 48% para rendimentos superiores a 86.634 €, acrescida de uma taxa adicional de solidariedade para rendimentos muito elevados.
             </p>
           </div>
           <div class="bg-white rounded-xl border border-neutral-200 p-6">
             <h3 class="text-lg font-bold text-neutral-900 mb-2">A taxa de IRS aplica-se sobre todo o rendimento?</h3>
             <p class="text-neutral-600 leading-relaxed">
-              Não. O IRS em Portugal funciona por escalões progressivos: cada taxa marginal aplica-se apenas à parte do rendimento que se enquadra nesse escalão. Por exemplo, se ganha 15.000 € coletáveis, os primeiros 8.342 € são tributados a 12,5%, os seguintes 4.245 € a 15,7% e o restante a 21,2%.
+              Não. O IRS em Portugal funciona por escalões progressivos: cada taxa marginal aplica-se apenas à parte do rendimento que se enquadra nesse escalão. Por exemplo, se ganha 15.000 € coletáveis, os primeiros 8.342 € são tributados a 12,2%, os seguintes 4.245 € a 15,2% e o restante a 20,7%.
             </p>
           </div>
           <div class="bg-white rounded-xl border border-neutral-200 p-6">
@@ -235,6 +235,7 @@ import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
           <ul class="space-y-1 text-sm text-neutral-600">
             <li>Código do Imposto sobre o Rendimento das Pessoas Singulares (CIRS), artigos 68.º e 68.º-A</li>
             <li>Orçamento do Estado para 2026 - Lei aprovada pela Assembleia da República</li>
+            <li><a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/212-2026-1190825214" class="text-primary-600 hover:text-primary-700">Decreto-Lei n.º 212/2026, de 4 de novembro</a> - redução das taxas dos seis primeiros escalões para os rendimentos de 2026</li>
             <li>Autoridade Tributária e Aduaneira - <a href="https://www.portaldasfinancas.gov.pt" class="text-primary-600 hover:text-primary-700">portaldasfinancas.gov.pt</a></li>
           </ul>
         </div>

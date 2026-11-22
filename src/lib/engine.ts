@@ -19,6 +19,7 @@ import {
   retencaoMensal as retencaoTabela,
   AJUSTE_NOVEMBRO_2026,
   type EstadoCivil,
+  type EscalaoIRS,
 } from "./baremes-2026";
 
 /* ═══════════════════════════════ Types ═══════════════════════════════ */
@@ -106,7 +107,8 @@ export function calculateTSU(grossMonthly: number): {
 export function calculateIRS(
   annualTaxable: number,
   maritalStatus: EstadoCivil,
-  dependents: number
+  dependents: number,
+  escaloes: EscalaoIRS[] = ESCALOES_IRS_2026
 ): number {
   if (annualTaxable <= 0) return 0;
 
@@ -115,7 +117,7 @@ export function calculateIRS(
   const quociente = maritalStatus === "casado1titular" ? 2 : 1;
   const base = annualTaxable / quociente;
   let imposto = 0;
-  for (const escalao of ESCALOES_IRS_2026) {
+  for (const escalao of escaloes) {
     if (base <= escalao.limiteMax) {
       imposto = (base * escalao.taxa - escalao.parcelaAbater) * quociente;
       break;

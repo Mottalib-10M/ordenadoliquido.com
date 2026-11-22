@@ -1,0 +1,172 @@
+---
+import { CITAVEIS } from '../../../data/blocos-citaveis';
+import Layout from "../../../layouts/Layout.astro";
+import MiniSimAutonome from '../../../components/calc/MiniSimAutonome';
+import { ESCALOES_IRS_2026 as E26, ESCALOES_IRS_2027_PROPOSTA as E27, MINIMO_EXISTENCIA_2026, MINIMO_EXISTENCIA_2027_PROPOSTA, SALARIO_MINIMO_2026 } from "../../../lib/baremes-2026";
+import { calculateIRS } from "../../../lib/engine";
+
+// Todos os valores vêm do motor : escalões de 2026 (Decreto-Lei n.º 212/2026) contra a Proposta de Lei n.º 110/XVII/2.ª.
+const n = (x: number, d = 0) => new Intl.NumberFormat("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
+const pct = (t: number) => `${n(t * 100, 1)}%`;
+const faixa = (E: typeof E26, i: number) => i === 0 ? `Até ${n(E[0].limiteMax)} €` : E[i].limiteMax === Infinity ? `Mais de ${n(E[i - 1].limiteMax)} €` : `${n(E[i - 1].limiteMax)} € a ${n(E[i].limiteMax)} €`;
+const coletaveis = [10000, 15000, 20000, 25000, 30000, 40000, 50000, 80000, 100000];
+const linhas = coletaveis.map((c) => { const a = calculateIRS(c, "solteiro", 0); const b = calculateIRS(c, "solteiro", 0, E27); return { c, a, b, d: a - b }; });
+const ex = linhas.find((l) => l.c === 20000)!;
+const ex50 = linhas.find((l) => l.c === 50000)!;
+
+const faqs = [
+  { q: "Quais são os escalões de IRS em 2027?", a: `Segundo a proposta de Orçamento do Estado para 2027, os nove escalões mantêm as taxas de 2026, de 12,2% a 48%, e os limites sobem 3,88%: o primeiro vai até ${n(E27[0].limiteMax)} € e o último começa acima de ${n(E27[7].limiteMax)} €. A proposta tem votação final global marcada para 24 de novembro de 2026; só depois da publicação da lei os valores ficam definitivos.` },
+  { q: "Quanto vou poupar de IRS em 2027?", a: `Depende do rendimento coletável. Com ${n(20000)} € coletáveis, um contribuinte não casado sem dependentes paga ${n(ex.b, 2)} € com os escalões propostos para 2027, contra ${n(ex.a, 2)} € em 2026: menos ${n(ex.d, 2)} € por ano. Com ${n(50000)} €, a poupança é de ${n(ex50.d, 2)} €. O ganho vem só da atualização dos limites, porque as taxas não mudam.` },
+  { q: "As taxas de IRS descem em 2027?", a: "Não, face às taxas que se aplicam aos rendimentos de 2026. As taxas dos seis primeiros escalões já desceram em novembro de 2026, com efeitos a 1 de janeiro de 2026, pelo Decreto-Lei n.º 212/2026. A proposta para 2027 repete essas taxas e só atualiza os limites. As propostas da oposição para baixar mais as taxas foram rejeitadas na especialidade." },
+  { q: "Quando mudam as tabelas de retenção na fonte de 2027?", a: "As tabelas de retenção de 2027 são aprovadas por despacho do Secretário de Estado dos Assuntos Fiscais depois da publicação do Orçamento, normalmente em janeiro, e aplicam-se aos salários pagos a partir dessa data. Até lá, os empregadores continuam a reter com as tabelas de 2026, e a diferença é acertada na declaração de IRS entregue em 2028." },
+];
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://ordenadoliquido.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Guias", "item": "https://ordenadoliquido.com/guides/" },
+    { "@type": "ListItem", "position": 3, "name": "Escalões de IRS 2027", "item": "https://ordenadoliquido.com/guides/escaloes-irs-2027/" }
+  ]
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
+};
+const th = "border border-neutral-200 px-4 py-3 text-left font-semibold text-neutral-900";
+const td = "border border-neutral-200 px-4 py-2";
+---
+
+<Layout
+  title="Escalões de IRS 2027: Proposta do OE, Limites e Poupança"
+  description="Escalões de IRS 2027 segundo a proposta de Orçamento: limites mais 3,88 %, taxas de 2026, quanto poupa por rendimento e o que ainda não está publicado."
+  canonical="/guides/escaloes-irs-2027/"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <article class="pt-6 pb-12 md:pb-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav aria-label="Breadcrumb" class="mb-6 text-sm text-neutral-500">
+        <ol class="flex items-center gap-1.5 flex-wrap">
+          <li><a href="/" class="hover:text-primary-600 no-underline text-neutral-500">Início</a></li>
+          <li class="before:content-['/'] before:mx-1.5"><a href="/guides/" class="hover:text-primary-600 no-underline text-neutral-500">Guias</a></li>
+          <li class="before:content-['/'] before:mx-1.5 text-neutral-900 font-medium">Escalões de IRS 2027</li>
+        </ol>
+      </nav>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-6">
+        Escalões de IRS 2027: o que diz a proposta de Orçamento
+      </h1>
+      <p class="mb-8 text-neutral-700 leading-relaxed">{CITAVEIS['/guides/escaloes-irs-2027/']}</p>
+      <MiniSimAutonome client:visible kind="escaloes2027" lang="pt" locale="pt-PT" href="/" />
+
+      <div class="prose prose-neutral max-w-none">
+        <p class="text-lg text-neutral-600 leading-relaxed mb-8">
+          Os escalões de IRS 2027 ainda não são lei. O Governo entregou a Proposta de Lei n.º 110/XVII/2.ª, que aprova o Orçamento do Estado para 2027, a 8 de outubro de 2026; a atualização dos limites foi aprovada na especialidade a 19 de novembro, e a votação final global está marcada para 24 de novembro de 2026. Esta página mostra os valores da proposta, identificados como tal, e diz o que ainda não foi publicado.
+        </p>
+
+        <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Escalões de IRS 2027 e 2026 lado a lado</h2>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          A proposta dá nova redação ao artigo 68.º do Código do IRS: cada limite sobe 3,88% e as taxas ficam iguais às que se aplicam aos rendimentos de 2026 desde o Decreto-Lei n.º 212/2026. A parcela a abater de cada escalão resulta dos limites e das taxas.
+        </p>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="bg-primary-50"><th class={th}>Escalão</th><th class={th}>Rendimento coletável 2026</th><th class={th}>Proposta 2027</th><th class={th}>Taxa marginal</th><th class={th}>Parcela a abater 2027</th></tr>
+            </thead>
+            <tbody>
+              {E27.map((e, i) => (
+                <tr class={i % 2 === 0 ? 'bg-white' : 'bg-neutral-50'}><td class={td}>{i + 1}.º</td><td class={td}>{faixa(E26, i)}</td><td class={td}>{faixa(E27, i)}</td><td class={td}>{pct(e.taxa)}</td><td class={td}>{n(e.parcelaAbater, 2)} €</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          As taxas médias que a proposta publica na coluna B do artigo 68.º batem com esta tabela: 13,212% no limite do 2.º escalão, 24,732% no do 6.º e 34,658% no do 8.º. A taxa adicional de solidariedade passa a aplicar-se acima de {n(E27[7].limiteMax)} €, o limite do último escalão, em vez de 80.000 €: 2,5% até 250.000 € e 5% acima.
+        </p>
+
+        <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Quanto IRS se paga em 2027, por rendimento</h2>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          Imposto anual de um contribuinte não casado sem dependentes, depois da dedução de 250 € de despesas gerais familiares, com os escalões de 2026 e com os propostos para 2027. O rendimento coletável é o mesmo nos dois anos, para isolar o efeito da tabela.
+        </p>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="bg-primary-50"><th class={th}>Rendimento coletável</th><th class={th}>IRS 2026</th><th class={th}>IRS 2027 (proposta)</th><th class={th}>Poupança por ano</th><th class={th}>Taxa média 2027</th></tr>
+            </thead>
+            <tbody>
+              {linhas.map((l, i) => (
+                <tr class={i % 2 === 0 ? 'bg-white' : 'bg-neutral-50'}><td class={td}>{n(l.c)} €</td><td class={td}>{n(l.a, 2)} €</td><td class={td}>{n(l.b, 2)} €</td><td class={td}>{n(l.d, 2)} €</td><td class={td}>{pct(l.b / l.c)}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          A poupança cresce com o rendimento, porque cada limite que sobe faz passar uma fatia maior para uma taxa mais baixa, mas continua pequena em proporção: com {n(20000)} € coletáveis são {n(ex.d, 2)} € por ano, cerca de {n(ex.d / 14, 2)} € por cada um dos 14 pagamentos. Quem teve um aumento salarial próximo da inflação paga, em termos reais, aproximadamente o mesmo imposto: é esse o objetivo de atualizar os limites.
+        </p>
+
+        <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Mínimo de existência e salário mínimo em 2027</h2>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          A proposta muda também o artigo 70.º: o valor de referência do mínimo de existência passa a ser o maior entre {n(MINIMO_EXISTENCIA_2027_PROPOSTA)} € e 1,5 × 14 × IAS, contra {n(MINIMO_EXISTENCIA_2026)} € em 2026. Abaixo deste rendimento anual não se paga IRS, e acima dele o imposto não pode deixar o rendimento líquido de imposto abaixo desse valor.
+        </p>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          O salário mínimo de 2027 ainda não está fixado por decreto-lei. O acordo tripartido de valorização salarial assinado em outubro de 2024 prevê 970 € em 2027, contra {n(SALARIO_MINIMO_2026)} € em 2026, e é esse o valor que o Governo assume no relatório do Orçamento; os sindicatos pedem mais, e o valor só fica definido com a publicação do diploma, normalmente em dezembro. Com 970 € durante 14 meses, o rendimento anual seria de {n(970 * 14)} €, abaixo do mínimo de existência proposto: quem ganha o salário mínimo continuaria sem IRS a pagar.
+        </p>
+
+        <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">O que ainda não está publicado para 2027</h2>
+        <ul class="list-disc pl-6 text-neutral-700 leading-relaxed mb-4 space-y-2">
+          <li><strong>A lei do Orçamento.</strong> Até à votação final global e à publicação em Diário da República, os escalões acima são uma proposta e podem ainda mudar.</li>
+          <li><strong>O IAS de 2027.</strong> É atualizado por portaria no fim do ano, com base na inflação e no crescimento. Dele dependem a dedução específica (8,54 × IAS), o limite do IRS Jovem (55 × IAS) e a parte do mínimo de existência que resulta do IAS. Nenhum destes valores é estimado aqui.</li>
+          <li><strong>As tabelas de retenção na fonte de 2027.</strong> São publicadas por despacho, normalmente em janeiro. Até lá, os salários continuam a ser retidos com as tabelas de 2026.</li>
+          <li><strong>O salário mínimo.</strong> 970 € é o valor do acordo e da proposta de Orçamento, não um valor publicado em decreto-lei.</li>
+        </ul>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          O <a href="/" class="text-primary-600 hover:text-primary-700">simulador de salário líquido</a> continua a usar os valores de 2026, em vigor hoje, e os <a href="/guides/escaloes-irs-2026/" class="text-primary-600 hover:text-primary-700">escalões de IRS 2026</a> explicam o cálculo passo a passo. Quando a lei e as tabelas de 2027 forem publicadas, esta página e o simulador passam a usar os valores finais.
+        </p>
+
+        <h2 class="text-2xl font-bold text-neutral-900 mt-10 mb-4">Quando a mudança chega ao recibo de vencimento</h2>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          Os escalões aplicam-se ao imposto do ano inteiro, calculado na declaração entregue entre abril e junho de 2028. No recibo mensal, a mudança só aparece quando o empregador começar a usar as tabelas de retenção de 2027. Se essas tabelas forem publicadas a meio de janeiro, os salários pagos antes dessa data são retidos com as tabelas antigas, e o acerto faz-se no reembolso ou no pagamento final de 2028.
+        </p>
+        <p class="text-neutral-700 leading-relaxed mb-4">
+          Para os rendimentos de 2026, o efeito da descida de novembro já chegou ao recibo: o Despacho n.º 12523-A/2026 reduziu para metade a retenção dos salários pagos em novembro de 2026, incluindo o subsídio de Natal pago nesse mês, e as novas taxas contam na declaração entregue em 2027.
+        </p>
+
+        <div class="bg-primary-50 border border-primary-200 rounded-xl p-6 mb-8">
+          <h2 class="text-lg font-bold text-primary-800 mb-3">Ferramentas relacionadas</h2>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/" class="text-primary-700 hover:text-primary-900 font-medium">Calculadora de Salário Líquido 2026</a> - O líquido de hoje, com as tabelas em vigor.</li>
+            <li><a href="/guides/escaloes-irs-2026/" class="text-primary-700 hover:text-primary-900 font-medium">Escalões de IRS 2026</a> - As taxas aplicadas aos rendimentos deste ano.</li>
+            <li><a href="/guides/retencao-na-fonte/" class="text-primary-700 hover:text-primary-900 font-medium">Guia de Retenção na Fonte</a> - Como os escalões passam para a retenção mensal.</li>
+            <li><a href="/guides/salario-minimo-portugal/" class="text-primary-700 hover:text-primary-900 font-medium">Salário mínimo em Portugal</a> - O valor de 2026 e a trajetória acordada.</li>
+          </ul>
+        </div>
+
+        <div class="border-t border-neutral-200 pt-6">
+          <h2 class="text-lg font-bold text-neutral-900 mb-3">Fontes</h2>
+          <ul class="space-y-1 text-sm text-neutral-600">
+            <li><a href="https://app.parlamento.pt/OE2027/HTML/OrcamentoEstado2027.html" class="text-primary-600 hover:text-primary-700">Proposta de Lei n.º 110/XVII/2.ª, Orçamento do Estado para 2027</a> - artigo 60.º (artigos 68.º, 68.º-A e 70.º do CIRS)</li>
+            <li><a href="https://www.parlamento.pt/OrcamentoEstado/paginas/oe.aspx" class="text-primary-600 hover:text-primary-700">Assembleia da República: Orçamento do Estado</a> - calendário das votações</li>
+            <li><a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/212-2026-1190825214" class="text-primary-600 hover:text-primary-700">Decreto-Lei n.º 212/2026, de 4 de novembro</a> - taxas dos rendimentos de 2026</li>
+            <li>Autoridade Tributária e Aduaneira - <a href="https://www.portaldasfinancas.gov.pt" class="text-primary-600 hover:text-primary-700">portaldasfinancas.gov.pt</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <section class="border-t border-neutral-200 pt-6 mt-6 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-3">Perguntas frequentes</h2>
+      <div class="space-y-3">
+        {faqs.map((f) => (
+          <details class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer font-semibold text-neutral-800 hover:text-primary-600 list-none">{f.q}</summary>
+            <div class="px-4 pb-4 text-sm text-neutral-700 leading-relaxed">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</Layout>
