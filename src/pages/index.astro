@@ -12,6 +12,7 @@ const r1500 = calculateSalary({ grossMonthly: 1500, maritalStatus: 'solteiro', d
 const r1500d2 = calculateSalary({ grossMonthly: 1500, maritalStatus: 'solteiro', dependents: 2, irsJovem: 0 });
 const eur = (x: number) => `${n(x, 2)} €`;
 const faqs = [
+  { q: 'Quando se conhecem os valores do salário líquido de 2027?', a: 'Os escalões de IRS de 2027 estão na proposta de Orçamento do Estado, com votação final global a 24 de novembro de 2026 e publicação no Diário da República prevista até ao fim de dezembro. As tabelas de retenção na fonte saem por despacho, em regra no início de janeiro, e o salário mínimo por decreto-lei, habitualmente em dezembro. Até lá a calculadora usa as regras de 2026.' },
   { q: 'Quanto recebe líquido quem ganha o salário mínimo em 2026?', a: `Com o salário mínimo de ${n(SMN)} € brutos, um trabalhador solteiro sem dependentes recebe ${eur(smn.netMonthly)} por mês. A retenção na fonte de IRS é de ${eur(smn.retencaoMensal)}, porque as tabelas de 2026 dispensam de retenção este nível de salário, e o único desconto é a contribuição de 11% para a Segurança Social, ${eur(smn.tsuEmployee)}. Os subsídios de Natal e de férias seguem a mesma regra.` },
   { q: 'A retenção na fonte é o IRS que vou pagar no fim do ano?', a: 'Não. A retenção mensal é um adiantamento calculado por tabelas que supõem o mesmo salário todos os meses e ignoram as suas despesas dedutíveis. O imposto definitivo só se apura na declaração anual, entregue entre abril e junho do ano seguinte, com os escalões e as deduções à coleta. A diferença dá reembolso quando se reteve a mais, ou pagamento quando se reteve a menos.' },
   { q: 'O simulador conta com os subsídios de Natal e de férias?', a: 'Sim. O líquido mensal corresponde a um dos doze meses de vencimento, e o líquido anual soma catorze pagamentos: os doze meses e os dois subsídios, cada um igual a um mês de salário base. Cada subsídio tem retenção própria, calculada à parte com a tabela do mês, e desconta os mesmos 11% de Segurança Social. Quem pede os subsídios em duodécimos recebe o mesmo valor bruto anual, repartido pelos doze meses.' },
@@ -190,6 +191,19 @@ const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 
       <p>
         Os trabalhadores que auferem o sal&aacute;rio m&iacute;nimo est&atilde;o, em regra, isentos de reten&ccedil;&atilde;o na fonte de IRS, ficando apenas sujeitos ao desconto para a Seguran&ccedil;a Social de 11%. Isto significa que, em 2026, um trabalhador a receber o sal&aacute;rio m&iacute;nimo tem um vencimento l&iacute;quido mensal de {n(smn.netMonthly, 2)}&euro; ({n(SMN)}&euro; - {n(smn.tsuEmployee, 2)}&euro; de TSU).
+      </p>
+
+      <h3 id="2027" class="text-xl font-bold text-neutral-900 mt-10 mb-4">Salário líquido em 2027: o que já se sabe e quando sai o resto</h3>
+      <p>
+        Nenhum valor de 2027 que mexe no salário líquido é ainda lei. Os escalões de IRS para 2027 estão na proposta de Lei do Orçamento do Estado (Proposta de Lei n.º 110/XVII), com votação final global na Assembleia da República marcada para 24 de novembro de 2026; depois seguem para promulgação pelo Presidente da República e publicação no Diário da República, normalmente até ao fim de dezembro.
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-neutral-700">
+        <li><strong>Tabelas de retenção na fonte de 2027:</strong> aprovadas por despacho do Governo e publicadas no Diário da República, em regra no início de janeiro.</li>
+        <li><strong>Salário mínimo de 2027:</strong> fixado por decreto-lei do Governo, habitualmente publicado em dezembro.</li>
+        <li><strong>IAS de 2027</strong>, que entra no mínimo de existência: fixado por portaria no início do ano.</li>
+      </ul>
+      <p>
+        A calculadora mantém as regras de 2026 até serem substituídas e passa a 2027 no dia em que cada valor for publicado. A comparação já possível está nos <a href="/guides/escaloes-irs-2027/">escalões de IRS 2027</a>, apresentados como proposta.
       </p>
 
       <h3 class="text-xl font-bold text-neutral-900 mt-10 mb-4">Custo Total para o Empregador</h3>
