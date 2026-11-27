@@ -31,28 +31,28 @@
 
 @theme {
   /* Vert du drapeau : identite, montants percus, liens */
-  --color-primary-50: #ecf8f1;
-  --color-primary-100: #d2efe0;
-  --color-primary-200: #a6dfc2;
-  --color-primary-300: #6fc79e;
-  --color-primary-400: #35a876;
-  --color-primary-500: #0c8a53;
-  --color-primary-600: #046a38;
-  --color-primary-700: #03552d;
-  --color-primary-800: #044224;
-  --color-primary-900: #05321c;
+  --color-primary-50: #eef7f3;
+  --color-primary-100: #dbede5;
+  --color-primary-200: #b6dccb;
+  --color-primary-300: #86c4a9;
+  --color-primary-400: #49a77e;
+  --color-primary-500: #0C8A53;
+  --color-primary-600: #0a7547;
+  --color-primary-700: #08613a;
+  --color-primary-800: #074c2e;
+  --color-primary-900: #053a23;
 
   /* Rouge du drapeau : retenues et contributions, par petites touches */
-  --color-secondary-50: #fef2f1;
-  --color-secondary-100: #fde0dd;
-  --color-secondary-200: #fbc3bd;
-  --color-secondary-300: #f5938a;
-  --color-secondary-400: #ec5f52;
-  --color-secondary-500: #da291c;
-  --color-secondary-600: #b81f14;
-  --color-secondary-700: #96190f;
-  --color-secondary-800: #78150d;
-  --color-secondary-900: #5c110a;
+  --color-secondary-50: #fcf0ef;
+  --color-secondary-100: #f9dfdd;
+  --color-secondary-200: #f4bfbb;
+  --color-secondary-300: #ec948e;
+  --color-secondary-400: #e35e55;
+  --color-secondary-500: #DA291C;
+  --color-secondary-600: #b92318;
+  --color-secondary-700: #991d14;
+  --color-secondary-800: #78170f;
+  --color-secondary-900: #5c110c;
 
   /* Or de la sphere armillaire : soulignements, jamais du texte sur fond clair */
   --color-accent-100: #fff4d6;
@@ -378,3 +378,35 @@ main select[size="1"] {
   background-position: right 0.75rem center;
   background-size: 1rem 1rem;
 }
+
+/* === Charte du pays (refonte d'identité validée par l'éditeur, appliquée le 2026-11-25) ===
+   En-tête plein, bandeau héros, simulateur en carte, sections alternées, chiffres-résultats, boutons et pied
+   aux couleurs du pays ; l'échelle --color-accent-* du @theme porte la couleur forte. */
+:root { --color-primary-950: #042919; --color-secondary-950: #410c08; }
+/* proposition ordenadoliquido.com : surcharge du thème (src/styles/global.css), rien d'appliqué */
+header.sticky { background:#046A38 !important; border-bottom:4px solid #DA291C !important; }
+header.sticky a, header.sticky button, header.sticky span, header.sticky svg { color:#fff !important; }
+header.sticky .text-red-600, header.sticky .text-primary-700, header.sticky .text-patriot-600 { color:#FFE7A3 !important; }
+header.sticky [class*="bg-white"] a, header.sticky [class*="bg-white"] span, header.sticky [class*="bg-white"] p { color:#1F2937 !important; }
+header.sticky input { color:#1F2937 !important; }
+header.sticky img[src^="data:"] { background:#fff; border-radius:8px; padding:3px; }
+main h1 { letter-spacing:-0.02em; }
+main .bg-primary-800 h1 { color:#FFFFFF; } /* reprise 2026-11-25 : le rouge sur le vert du bandeau faisait 1,8:1 */
+main h1:not(.bg-primary-800 *) { color:#046A38; } /* guides, FAQ : titre sur fond clair (le blanc y était invisible) */
+main h2, main details summary { color:#046A38; }
+main .bg-accent-50 { background:#e6f0eb !important; border-left:5px solid #DA291C; }
+main a[class*="border-accent"], main a[class*="bg-accent-50"] { background:#046A38 !important; color:#fff !important; border-color:#046A38 !important; border-radius:10px; }
+main table thead th { color:#046A38; border-bottom:2px solid #DA291C !important; }
+main details[open] > summary, main details > summary:hover { background:#e6f0eb; }
+main :is([class*="text-3xl"], [class*="text-4xl"]):not(h1, section.bg-primary-800 *) { color:#DA291C; }
+/* Mode sombre : les verts et rouges foncés de la charte passent à leur ton clair (AA sur le fond sombre) */
+@media (prefers-color-scheme: dark) {
+  main h1:not(.bg-primary-800 *), main h2, main details summary, main table thead th, main :is(.text-primary-600, .text-primary-700) { color:#86c4a9; }
+  main :is(.text-secondary-600, .text-secondary-700) { color:#ec948e; }
+  main details[open] > summary, main details > summary:hover { background:#1f2a24; }
+  main .bg-accent-50 { background:#1c2a22 !important; }
+  main .bg-primary-50 { background:#1c2a22 !important; }
+  main .bg-primary-50 :is(.text-primary-800, .text-primary-900) { color:#a8d8c0; } /* textes vert très foncé de l'encadré, devenu sombre */ /* encadré du résultat : resté clair sous un texte vert clair (1,8:1) */
+  footer.bg-neutral-900 :is(p, time, span:not(a *)) { color:#9a9a91; }
+}
+/* === fin de la charte du pays === */
